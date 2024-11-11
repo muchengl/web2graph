@@ -1,9 +1,6 @@
 from abc import ABC, abstractmethod
 
-from checkpoint.checkpoint_config import CheckpointConfig
-
-
-# from fsm.action import GraphAction
+from project_mgr.checkpoint_config import CheckpointConfig
 
 
 class GraphState(ABC):

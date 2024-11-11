@@ -3,9 +3,9 @@ import uuid
 from typing import TextIO
 
 import yaml
-from browser_env import Action, action2str, ScriptBrowserEnv
+# from browser_env import Action, action2str, ScriptBrowserEnv
 from fsm import GraphAction
-from checkpoint.checkpoint_config import CheckpointConfig
+from project_mgr.checkpoint_config import CheckpointConfig
 
 from loguru import logger
 

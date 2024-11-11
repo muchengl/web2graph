@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 # from fsm import GraphState
-from checkpoint.checkpoint_config import CheckpointConfig
+from project_mgr.checkpoint_config import CheckpointConfig
 
 
 class Graph(ABC):
