@@ -19,9 +19,7 @@ class WebState(GraphState):
                  state_name: str,
                  state_info: str,
                  web_image: Image,
-                 som_image: Image,
-                 ocr_result,
-                 parsed_content,
+                 som: WebSOM,
                  browse_env: PlaywrightBrowserEnv):
 
         self.browse_env = browse_env
@@ -31,9 +29,10 @@ class WebState(GraphState):
         self.web_image = web_image
 
         # processed image & info
-        self.som_image = som_image
-        self.ocr_result = ocr_result
-        self.parsed_content = parsed_content
+        self.som = som
+        self.som_image = som.processed_image
+        self.label_coordinates = som.label_coordinates
+        self.parsed_content = som.parsed_content
 
         super().__init__(state_name, state_info)
 
@@ -98,7 +97,7 @@ class WebState(GraphState):
                 "info": self.state_info,
                 "image_path": str(image_path),
                 "som_path": str(som_path),
-                "ocr_result": json.dumps(self.ocr_result),
+                "label_coordinates": json.dumps(self.label_coordinates),
                 "parsed_content": json.dumps(self.parsed_content),
             }
         }

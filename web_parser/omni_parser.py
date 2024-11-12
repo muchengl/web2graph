@@ -12,9 +12,14 @@ import matplotlib.pyplot as plt
 
 
 class WebSOM:
-    def __init__(self, processed_image: Image.Image, ocr_result, parsed_content):
+    def __init__(self, processed_image: Image.Image, label_coordinates, parsed_content):
         self.processed_image = processed_image
-        self.ocr_result = ocr_result
+        # self.ocr_result = ocr_result
+        self.label_coordinates = label_coordinates
+        logger.info(type(label_coordinates))
+
+        self.label_coordinates = {key: value.tolist() for key, value in label_coordinates.items()}
+
         self.parsed_content = parsed_content
 
 
@@ -81,10 +86,15 @@ def process_image_with_models(
         imgsz=640
     )
 
+    # logger.info(f"label_coordinates: {label_coordinates}")
+    # logger.info(f"parsed_content_list: {parsed_content_list}")
+
     # Decode labeled image from base64
     processed_image = Image.open(io.BytesIO(base64.b64decode(dino_labeled_img)))
 
-    return WebSOM(processed_image, ocr_bbox_rslt, parsed_content_list)
+    # return WebSOM(processed_image, ocr_bbox_rslt, parsed_content_list)
+
+    return WebSOM(processed_image, label_coordinates, parsed_content_list)
 
 
 class WebParserThread(QThread):
@@ -112,7 +122,7 @@ class WebParserThread(QThread):
 
 if __name__ == '__main__':
     # Example usage
-    image_path = 'screenshot.png'
+    image_path = 'cache.png'
     image = Image.open(image_path)
 
     # Initialize models only once
@@ -139,6 +149,6 @@ if __name__ == '__main__':
     for parsed_content in result.parsed_content:
         print(parsed_content)
 
-    for i in range(len(result.ocr_result[0])):
-        print(result.ocr_result[0][i], end=' -> ')
-        print(result.ocr_result[1][i], end='\n\n')
+    for i in range(len(result.label_coordinates[0])):
+        print(result.label_coordinates[0][i], end=' -> ')
+        print(result.label_coordinates[1][i], end='\n\n')

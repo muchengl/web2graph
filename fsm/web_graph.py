@@ -6,7 +6,7 @@ import yaml
 from PIL import Image
 from loguru import logger
 
-from browser.actions import Action, ActionType
+from browser.actions import Action, ActionType, ClickAction, TypeAction
 from browser.browser_env import PlaywrightBrowserEnv
 from fsm.web_action import WebAction
 from fsm.web_state import WebState
@@ -24,6 +24,8 @@ class WebGraph(FSMGraph):
 
         super().__init__(root_state)
 
+    def insert_and_move(self, action: Action):
+        web_action = WebAction()
 
     def do_checkpoint(self, cfg: CheckpointConfig):
 
@@ -128,61 +130,13 @@ class WebGraph(FSMGraph):
         #
         # Load states
         logger.info("Load states")
-        states: dict[Any, WebState] = {}
-        with open(state_file_path, "r") as state_file:
+        states: dict[Any, WebState] = self._load_state(state_file_path)
 
-            state_data = yaml.safe_load(state_file)
-
-            for state_id, state_info in state_data.items():
-
-                id = state_info["id"]
-                state_name = state_info["name"]
-                state_info_text = state_info["info"]
-                uuid = state_info.get("uuid", None)
-
-                image_path = state_info.get("image_path", None)
-                som_path = state_info.get("som_path", None)
-
-                ocr_result = state_info.get("ocr_result", None)
-                parsed_content = state_info.get("parsed_content", None)
-
-
-                # Load image if path is provided
-                web_image = None
-                som_image = None
-                if image_path:
-                    web_image = Image.open(image_path)
-
-                if som_path:
-                    som_image = Image.open(som_path)
-
-                ocr_result_ = json.loads(ocr_result)
-                parsed_content_ = json.loads(parsed_content)
-
-
-                # Reconstruct state object
-                state = WebState(
-                    state_name,
-                    state_info_text,
-                    web_image,
-                    som_image,
-                    ocr_result_,
-                    parsed_content_,
-                    self.browse_env
-                )
-                state.id = id
-                state.uuid = uuid
-                states[state_id] = state
-
-                logger.info(f"load state: {state_id}")
-
-                print(state)
 
         #
         # Load actions
         logger.info("Load actions")
-        actions: dict[Any, WebAction] = {}
-        actions = self._load_actions(action_file_path)
+        actions: dict[Any, WebAction] = self._load_actions(action_file_path)
 
 
         #
@@ -199,6 +153,62 @@ class WebGraph(FSMGraph):
 
         logger.info("Checkpoint loaded successfully.")
 
+
+    def _load_state(self, state_file_path):
+        states: dict[Any, WebState] = {}
+        with open(state_file_path, "r") as state_file:
+
+            state_data = yaml.safe_load(state_file)
+
+            for state_id, state_info in state_data.items():
+
+                id = state_info["id"]
+                state_name = state_info["name"]
+                state_info_text = state_info["info"]
+                uuid = state_info.get("uuid", None)
+
+                image_path = state_info.get("image_path", None)
+                som_path = state_info.get("som_path", None)
+
+                label_coordinates = state_info.get("label_coordinates", None)
+                parsed_content = state_info.get("parsed_content", None)
+
+
+                # Load image if path is provided
+                web_image = None
+                som_image = None
+                if image_path:
+                    web_image = Image.open(image_path)
+
+                if som_path:
+                    som_image = Image.open(som_path)
+
+                label_coordinates_ = json.loads(label_coordinates)
+                parsed_content_ = json.loads(parsed_content)
+
+
+                # Reconstruct state object
+                som = WebSOM(
+                    som_image,
+                    label_coordinates_,
+                    parsed_content_,
+                )
+                state = WebState(
+                    state_name,
+                    state_info_text,
+                    web_image,
+                    som,
+                    self.browse_env
+                )
+                state.id = id
+                state.uuid = uuid
+                states[state_id] = state
+
+                logger.info(f"load state: {state_id}")
+
+                print(state)
+
+        return states
 
     def _load_actions(self, action_file_path):
         actions: dict[Any, WebAction] = {}
@@ -218,18 +228,28 @@ class WebGraph(FSMGraph):
                 action_target_id = action_info["action_target_id"]
 
 
-                action: Action = Action(
-                    ActionType[action_type],
-                    action_target_id,
-                    action_content
-                )
+                # action: Action = Action(
+                #     ActionType[action_type],
+                #     action_target_id,
+                #     action_content
+                # )
 
-                # if action_type == ActionType['CLICK']:
-                #     action: Action = Action(
-                #         ActionType[action_type],
-                #             action_target_id,
-                #             action_content
-                #     )
+                if action_type == ActionType['CLICK']:
+                    action: Action = ClickAction(
+                        None,
+                        None,
+                        action_target_id,
+                        action_content,
+                        ActionType[action_type]
+                    )
+                elif action_type == ActionType['TYPE']:
+                    action: Action = TypeAction(
+                        None,
+                        None,
+                        action_target_id,
+                        action_content,
+                        ActionType[action_type]
+                    )
 
 
                 # Reconstruct action object
@@ -264,7 +284,6 @@ class WebGraph(FSMGraph):
                 to_state_id = edge_info["to_state"]
                 action_id = edge_info["action"]
 
-
                 # Establish the action and state transitions
                 from_state = states[from_state_id]
                 to_state = states[to_state_id]
@@ -273,14 +292,15 @@ class WebGraph(FSMGraph):
                 if mid_action not in from_state.to_action:
                     from_state.to_action.append(mid_action)
 
+                if from_state not in mid_action.from_state:
+                    mid_action.from_state.append(from_state)
+
                 if to_state not in mid_action.to_state:
                     mid_action.to_state.append(to_state)
 
                     # Action based on previous State
-                    som = WebSOM(
-                        from_state.som_image,
-                        from_state.ocr_result.ocr_result,
-                        from_state.parsed_content
-                    )
-                    mid_action.action.web_som = som
+                    mid_action.action.web_som = from_state.som
                     mid_action.action.web_image = from_state.web_image
+
+                if mid_action not in to_state.from_action:
+                    to_state.from_action.append(mid_action)

@@ -42,8 +42,12 @@ class MainWindow(QMainWindow):
         self.browser = browser
         self.browser.start_browser_sync()
 
-        self.project_manager=None
+        self.project_manager: ProjectManager=None
 
+
+        self.current_web_image = None
+        self.current_web_som: WebSOM = None
+        self.image_som_enable = True
 
 
         # Set the main window properties
@@ -80,10 +84,14 @@ class MainWindow(QMainWindow):
         # Set QLabel as the widget of QScrollArea
         self.image_scroll_area.setWidget(self.image_label)
 
+        self.switch_image_button = QPushButton("Switch Image")
+        self.switch_image_button.clicked.connect(self.switch_image)
+
         # Left widget container
         left_widget = QWidget()
         left_layout = QVBoxLayout()
         left_layout.addWidget(self.image_scroll_area)
+        left_layout.addWidget(self.switch_image_button)
         left_widget.setLayout(left_layout)
 
 
@@ -96,19 +104,12 @@ class MainWindow(QMainWindow):
         input_layout = QVBoxLayout()
 
 
-        # URL input field
-        self.url_input = QLineEdit()
-        self.url_input.setPlaceholderText("Enter URL here")
-        self.capture_button = QPushButton("Capture Screenshot")
-        self.capture_button.clicked.connect(self.capture_screenshot)
-
-        # Add URL input and button to layout
-        # input_layout.addWidget(QLabel("URL:"))
-        input_layout.addWidget(self.url_input)
-        input_layout.addWidget(self.capture_button)
+        self.label_title = QLabel(f"Please open or create a project.")
+        self.label_title.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        self.label_title.setWordWrap(True)
+        input_layout.addWidget(self.label_title)
 
 
-        # som = QVBoxLayout()
         self.som_list = QListWidget()
         self.som_list.setFixedHeight(200)
         input_layout.addWidget(self.som_list)
@@ -171,10 +172,6 @@ class MainWindow(QMainWindow):
             self.display_screenshot(self.current_web_image)
 
 
-    def display_screenshot(self, pil_image):
-        self.pixmap = pil_image_to_qpixmap(pil_image)
-        self.resize_image()
-
 
     """
     Generate SOM
@@ -199,7 +196,7 @@ class MainWindow(QMainWindow):
 
         processed_image = web_som.processed_image
         parsed_content_list = web_som.parsed_content
-        ocr_bbox_rslt = web_som.ocr_result
+        label_coordinates = web_som.label_coordinates
 
         qt_image = ImageQt(processed_image)
         pixmap = QPixmap.fromImage(qt_image)
@@ -212,9 +209,7 @@ class MainWindow(QMainWindow):
             print(parsed_content)
             self.som_list.addItem(parsed_content)
 
-        for i in range(len(ocr_bbox_rslt[0])):
-            print(ocr_bbox_rslt[0][i], end=' -> ')
-            print(ocr_bbox_rslt[1][i], end='\n\n')
+        logger.info(label_coordinates)
 
 
     def on_item_double_clicked(self, item):
@@ -243,6 +238,7 @@ class MainWindow(QMainWindow):
             elif ActionType[selected_action] == ActionType.TYPE:
 
                 logger.info("taking TYPE...")
+
                 action = TypeAction(
                     self.current_web_image,
                     self.current_web_som,
@@ -258,13 +254,13 @@ class MainWindow(QMainWindow):
     def _process_current_state(self):
         self.current_web_image = self.browser.take_full_screenshot_sync()
 
-        self.som = process_image_with_models(
+        current_web_som = process_image_with_models(
             image=self.current_web_image,
             som_model=self.model_manager.get_som_model(),
             caption_model_processor=self.model_manager.get_caption_model()
         )
 
-        self.handle_som(self.som)
+        self.handle_som(current_web_som)
 
 
     def new_project_dialog(self):
@@ -284,6 +280,8 @@ class MainWindow(QMainWindow):
                     f"Name: {project_name} \n"
                     f"URL: {project_url}")
 
+
+
         self.browser.navigate_to_sync(project_url)
 
         self._process_current_state()
@@ -298,12 +296,13 @@ class MainWindow(QMainWindow):
             browse_env=self.browser,
             metadata=metadata,
             web_image=self.current_web_image,
-            som_image=self.som.processed_image,
-            ocr_result=self.current_web_som.ocr_result,
-            parsed_content=self.current_web_som.parsed_content
+            som=self.current_web_som
         )
         self.project_manager.save_project()
 
+        self.label_title.setText(f"Name: {self.project_manager.metadata.name} \n"
+                                 f"Path: {self.project_manager.metadata.path} \n"
+                                 f"URL: {self.project_manager.metadata.url} \n")
 
     def open_project_dialog(self):
 
@@ -326,10 +325,19 @@ class MainWindow(QMainWindow):
 
         som = WebSOM(
             self.project_manager.fsm_graph.current_state.som_image,
-            self.project_manager.fsm_graph.current_state.ocr_result,
+            self.project_manager.fsm_graph.current_state.label_coordinates,
             self.project_manager.fsm_graph.current_state.parsed_content
         )
         self.handle_som(som)
+        self.current_web_image = self.project_manager.fsm_graph.current_state.web_image
+
+        self.browser.navigate_to_sync(self.project_manager.url)
+        # todo: re take actions, move to current state
+
+
+        self.label_title.setText(f"Name: {self.project_manager.metadata.name} \n"
+                                 f"Path: {self.project_manager.metadata.path} \n"
+                                 f"URL: {self.project_manager.metadata.url} \n")
 
 
 
@@ -337,6 +345,16 @@ class MainWindow(QMainWindow):
     Utils
     
     """
+
+    def display_screenshot(self, pil_image):
+        if pil_image==self.current_web_image:
+            self.image_som_enable = False
+        else:
+            self.image_som_enable = True
+
+        self.pixmap = pil_image_to_qpixmap(pil_image)
+        self.resize_image()
+
 
     def resize_image(self):
         # Adjust the pixmap size to fit the label whenever the splitter is moved
@@ -353,8 +371,16 @@ class MainWindow(QMainWindow):
         super().resizeEvent(event)
 
 
+    def switch_image(self):
+        if self.image_som_enable:
+            self.display_screenshot(self.current_web_image)
+        else:
+            self.display_screenshot(self.current_web_som.processed_image)
 
-app = QApplication(sys.argv)
-window = MainWindow()
-window.show()
-sys.exit(app.exec())
+
+if __name__ == '__main__':
+
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())

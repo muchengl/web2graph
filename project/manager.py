@@ -8,6 +8,7 @@ from fsm import WebGraph, WebState
 from fsm.abs.graph import FSMGraph
 from project.checkpoint_config import CheckpointConfig
 from project.metadata import ProjectMetadata
+from web_parser.omni_parser import WebSOM
 
 
 class ProjectManager:
@@ -68,20 +69,18 @@ class ProjectManager:
 def new_project(browse_env: PlaywrightBrowserEnv,
                 metadata: ProjectMetadata,
                 web_image: Image,
-                som_image: Image,
-                ocr_result,
-                parsed_content) -> 'ProjectManager':
+                som: WebSOM) -> 'ProjectManager':
 
     if os.path.exists(metadata.path) is not True:
         os.makedirs(metadata.path)
+
+
 
     root_state = WebState(
         state_name="root",
         state_info="home page",
         web_image=web_image,
-        som_image=som_image,
-        ocr_result=ocr_result,
-        parsed_content=parsed_content,
+        som=som,
         browse_env=browse_env
     )
 

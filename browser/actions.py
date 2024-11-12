@@ -57,12 +57,15 @@ class ClickAction(Action):
 
         width, height = self.web_som.processed_image.size
 
-        id = int(self.action_target_id)
 
-        position = self.web_som.ocr_result[1][id]
+        position = self.web_som.label_coordinates[str(self.action_target_id)]
+        logger.info(f"click position: {position}")
 
-        avg_x = int((position[0] + position[2]) / 2)
-        avg_y = int((position[1] + position[3]) / 2)
+        # avg_x = int((position[0] + position[2]) / 2)
+        # avg_y = int((position[1] + position[3]) / 2)
+
+        avg_x = int(position[0] + (position[2]) / 2)
+        avg_y = int(position[1] + (position[3]) / 2)
 
         browser_env.click_at_position_sync(avg_x, avg_y)
 
@@ -74,7 +77,7 @@ class TypeAction(Action):
                  web_som: WebSOM,
                  action_target_id: int,
                  action_content: str='', # click som id
-                 action_type: ActionType=ActionType.CLICK):
+                 action_type: ActionType=ActionType.TYPE):
 
         super().__init__(action_type, action_target_id, action_content, web_image, web_som)
 
@@ -83,13 +86,19 @@ class TypeAction(Action):
 
         logger.info(f"TYPE: {self.action_target_id}, {self.action_content}")
 
+        logger.info(f"SOM: {self.web_som.label_coordinates}")
+
+
         width, height = self.web_som.processed_image.size
 
-        id = int(self.action_target_id)
+        # id = int(self.action_target_id)
 
-        position = self.web_som.ocr_result[1][id]
+        position = self.web_som.label_coordinates[str(self.action_target_id)]
+        logger.info(f"type position: {position}")
 
-        avg_x = int((position[0] + position[2]) / 2)
-        avg_y = int((position[1] + position[3]) / 2)
+        # avg_x = int((position[0] + position[2]) / 2)
+        # avg_y = int((position[1] + position[3]) / 2)
+        avg_x = int(position[0] + (position[2]) / 2)
+        avg_y = int(position[1] + (position[3]) / 2)
 
         browser_env.input_at_position_sync(avg_x, avg_y, self.action_content)
