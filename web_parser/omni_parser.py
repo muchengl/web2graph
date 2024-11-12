@@ -1,6 +1,6 @@
 import asyncio
-
 from PyQt6.QtCore import QThread, pyqtSignal
+from loguru import logger
 
 from web_parser.utils import get_som_labeled_img, check_ocr_box, get_caption_model_processor, get_yolo_model
 import torch
@@ -10,14 +10,15 @@ import base64
 import io
 import matplotlib.pyplot as plt
 
-def process_image_with_models(
-        image_path: str,
-        som_model_path: str,
-        caption_model_name: str,
-        caption_model_path: str,
-        box_threshold: float = 0.03,
-        device: str = 'mps'):
 
+class WebSOM:
+    def __init__(self, processed_image: Image.Image, ocr_result, parsed_content):
+        self.processed_image = processed_image
+        self.ocr_result = ocr_result
+        self.parsed_content = parsed_content
+
+
+def initialize_models(som_model_path: str, caption_model_name: str, caption_model_path: str, device: str = 'mps'):
     # Load YOLO model for object detection
     som_model = get_yolo_model(model_path=som_model_path)
     som_model.to(device)
@@ -29,6 +30,19 @@ def process_image_with_models(
         model_name_or_path=caption_model_path,
         device=device
     )
+    return som_model, caption_model_processor
+
+
+def process_image_with_models(
+        image: Image.Image,
+        som_model,
+        caption_model_processor,
+        box_threshold: float = 0.03) -> WebSOM:
+
+    logger.info("")
+
+    image_path = 'cache.png'
+    image.save(image_path, format='PNG')
 
     # Set up bounding box and scaling configuration
     img = Image.open(image_path)
@@ -70,60 +84,61 @@ def process_image_with_models(
     # Decode labeled image from base64
     processed_image = Image.open(io.BytesIO(base64.b64decode(dino_labeled_img)))
 
-    return processed_image, ocr_bbox_rslt, parsed_content_list
+    return WebSOM(processed_image, ocr_bbox_rslt, parsed_content_list)
+
 
 class WebParserThread(QThread):
     started_signal = pyqtSignal()
-    result_signal = pyqtSignal(object, object, object)  # Signal to emit processed_image, ocr_bbox_rslt, parsed_content_list
+    result_signal = pyqtSignal(object)  # Signal to emit processed_image, ocr_bbox_rslt, parsed_content_list
 
-
-    def __init__(self,
-                 image_path: str,
-                 som_model_path: str,
-                 caption_model_name: str,
-                 caption_model_path: str):
+    def __init__(self, image: Image.Image, som_model, caption_model_processor):
         super().__init__()
-        self.image_path = image_path
-        self.som_model_path = som_model_path
-        self.caption_model_name = caption_model_name
-        self.caption_model_path = caption_model_path
+        self.image = image
+        self.som_model = som_model
+        self.caption_model_processor = caption_model_processor
 
     def run(self):
         # Process the image and get results
-        processed_image, ocr_bbox_rslt, parsed_content_list = process_image_with_models(
-            self.image_path,
-            self.som_model_path,
-            self.caption_model_name,
-            self.caption_model_path
+        result = process_image_with_models(
+            self.image,
+            self.som_model,
+            self.caption_model_processor
         )
 
         # Emit the results after processing
-        self.result_signal.emit(processed_image, ocr_bbox_rslt, parsed_content_list)
+        self.result_signal.emit(result)
         self.started_signal.emit()
 
 
 if __name__ == '__main__':
     # Example usage
     image_path = 'screenshot.png'
-    # image = Image.open(image_path)
+    image = Image.open(image_path)
 
-    processed_image, ocr_bbox_rslt, parsed_content_list = process_image_with_models(
-        image_path=image_path,
+    # Initialize models only once
+    som_model, caption_model_processor = initialize_models(
         som_model_path='models/icon_detect/best.pt',
         caption_model_name="blip2",
         caption_model_path="models/icon_caption_blip2"
     )
 
+    # Process image with preloaded models
+    result = process_image_with_models(
+        image=image,
+        som_model=som_model,
+        caption_model_processor=caption_model_processor
+    )
+
     # Display processed image
     plt.figure(figsize=(12, 12))
-    plt.imshow(processed_image)
+    plt.imshow(result.processed_image)
     plt.axis('off')
     plt.show()
 
     # Print OCR bounding box results and parsed content
-    for parsed_content in parsed_content_list:
+    for parsed_content in result.parsed_content:
         print(parsed_content)
 
-    for i in range(len(ocr_bbox_rslt[0])):
-        print(ocr_bbox_rslt[0][i], end=' -> ')
-        print(ocr_bbox_rslt[1][i], end='\n\n')
+    for i in range(len(result.ocr_result[0])):
+        print(result.ocr_result[0][i], end=' -> ')
+        print(result.ocr_result[1][i], end='\n\n')

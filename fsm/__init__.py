@@ -1,6 +1,4 @@
-from .graph import Graph
-from .state import GraphState
-from .action import GraphAction
+from fsm.abs.state import GraphState
 
 __all__ = [
     "Graph",

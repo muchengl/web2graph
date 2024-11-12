@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 from typing import TextIO
 
@@ -8,9 +7,9 @@ from loguru import logger
 
 from agent.web_action import WebAction
 from agent.web_state import WebState
-from browser_env import StateInfo, Action, create_id_based_action, ScriptBrowserEnv
+from browser_env import Action, create_id_based_action, ScriptBrowserEnv
 from checkpoint.checkpoint_config import CheckpointConfig
-from fsm.graph import FSMGraph
+from fsm.abs.graph import FSMGraph
 
 
 class WebGraph(FSMGraph):

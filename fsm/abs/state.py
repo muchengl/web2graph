@@ -18,7 +18,7 @@ class GraphState(ABC):
         self.from_action: list['GraphAction'] = []
         self.to_action: list['GraphAction'] = []
 
-        from fsm.action import GraphAction
+        from fsm.abs.action import GraphAction
 
 
     @abstractmethod
