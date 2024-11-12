@@ -10,8 +10,9 @@ from browser.actions import Action, ActionType
 from browser.browser_env import PlaywrightBrowserEnv
 from fsm.web_action import WebAction
 from fsm.web_state import WebState
-from project_mgr.checkpoint_config import CheckpointConfig
+from project.checkpoint_config import CheckpointConfig
 from fsm.abs.graph import FSMGraph
+from web_parser.omni_parser import WebSOM
 
 
 class WebGraph(FSMGraph):
@@ -124,7 +125,9 @@ class WebGraph(FSMGraph):
             visited_ids = set(main_data["visited"])
             stack_ids = main_data["stack"]
 
+        #
         # Load states
+        logger.info("Load states")
         states: dict[Any, WebState] = {}
         with open(state_file_path, "r") as state_file:
 
@@ -132,12 +135,14 @@ class WebGraph(FSMGraph):
 
             for state_id, state_info in state_data.items():
 
-                id = state_id["id"]
+                id = state_info["id"]
                 state_name = state_info["name"]
                 state_info_text = state_info["info"]
                 uuid = state_info.get("uuid", None)
+
                 image_path = state_info.get("image_path", None)
                 som_path = state_info.get("som_path", None)
+
                 ocr_result = state_info.get("ocr_result", None)
                 parsed_content = state_info.get("parsed_content", None)
 
@@ -165,7 +170,7 @@ class WebGraph(FSMGraph):
                     parsed_content_,
                     self.browse_env
                 )
-                state.id = state_id
+                state.id = id
                 state.uuid = uuid
                 states[state_id] = state
 
@@ -173,11 +178,35 @@ class WebGraph(FSMGraph):
 
                 print(state)
 
+        #
         # Load actions
+        logger.info("Load actions")
+        actions: dict[Any, WebAction] = {}
+        actions = self._load_actions(action_file_path)
+
+
+        #
+        # Load edges and reconstruct connections
+        logger.info("Load edges and reconstruct connections")
+        self._load_edges(edge_file_path, states, actions)
+
+
+        # Set root state, current state, and restore visited and stack attributes
+        self.root_state = states[root_state_id]
+        self.current_state = states[current_state_id]
+        self.visited = set(visited_ids)
+        self.stack = [states[state_id] for state_id in stack_ids]
+
+        logger.info("Checkpoint loaded successfully.")
+
+
+    def _load_actions(self, action_file_path):
         actions: dict[Any, WebAction] = {}
         with open(action_file_path, "r") as action_file:
 
             action_data = yaml.safe_load(action_file)
+            if action_data is None:
+                return
 
             for action_id, action_info in action_data.items():
 
@@ -195,6 +224,13 @@ class WebGraph(FSMGraph):
                     action_content
                 )
 
+                # if action_type == ActionType['CLICK']:
+                #     action: Action = Action(
+                #         ActionType[action_type],
+                #             action_target_id,
+                #             action_content
+                #     )
+
 
                 # Reconstruct action object
                 web_action = WebAction(
@@ -210,11 +246,17 @@ class WebGraph(FSMGraph):
                 logger.info(f"load action: {action_id}")
                 print(action)
 
+        return actions
 
-        # Load edges and reconstruct connections
+
+    def _load_edges(self, edge_file_path, states, actions):
+
         with open(edge_file_path, "r") as edge_file:
 
             edge_data = yaml.safe_load(edge_file)
+            if edge_data is None:
+                return
+
 
             for edge_id, edge_info in edge_data.items():
 
@@ -228,17 +270,17 @@ class WebGraph(FSMGraph):
                 to_state = states[to_state_id]
                 mid_action = actions[action_id]
 
-                if action not in from_state.to_action:
-                    from_state.to_action.append(action)
+                if mid_action not in from_state.to_action:
+                    from_state.to_action.append(mid_action)
 
                 if to_state not in mid_action.to_state:
                     mid_action.to_state.append(to_state)
 
-
-        # Set root state, current state, and restore visited and stack attributes
-        self.root_state = states[root_state_id]
-        self.current_state = states[current_state_id]
-        self.visited = set(visited_ids)
-        self.stack = [states[state_id] for state_id in stack_ids]
-
-        logger.info("Checkpoint loaded successfully.")
+                    # Action based on previous State
+                    som = WebSOM(
+                        from_state.som_image,
+                        from_state.ocr_result.ocr_result,
+                        from_state.parsed_content
+                    )
+                    mid_action.action.web_som = som
+                    mid_action.action.web_image = from_state.web_image

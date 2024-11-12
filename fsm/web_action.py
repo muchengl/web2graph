@@ -7,7 +7,7 @@ import yaml
 from browser.actions import Action
 from browser.browser_env import PlaywrightBrowserEnv
 from fsm.abs import GraphAction
-from project_mgr.checkpoint_config import CheckpointConfig
+from project.checkpoint_config import CheckpointConfig
 
 from loguru import logger
 

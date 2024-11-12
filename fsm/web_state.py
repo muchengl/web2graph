@@ -9,7 +9,7 @@ from loguru import logger
 
 from browser.browser_env import PlaywrightBrowserEnv
 from fsm.abs import GraphState
-from project_mgr.checkpoint_config import CheckpointConfig
+from project.checkpoint_config import CheckpointConfig
 from web_parser.omni_parser import WebSOM
 
 

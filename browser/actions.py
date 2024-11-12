@@ -24,7 +24,12 @@ class Action(ABC):
     def __init__(self,
                  action_type: ActionType,
                  action_target_id: int,
-                 action_content: str=''):
+                 action_content: str='',
+                 web_image: Image.Image=None,
+                 web_som: WebSOM=None):
+
+        self.web_image = web_image
+        self.web_som = web_som
         self.type = action_type
         self.action_content = action_content
         self.action_target_id = action_target_id
@@ -43,9 +48,7 @@ class ClickAction(Action):
                  action_content: str='',
                  action_type: ActionType=ActionType.CLICK):
 
-        super().__init__(action_type, action_target_id, action_content)
-        self.web_image = web_image
-        self.web_som = web_som
+        super().__init__(action_type, action_target_id, action_content, web_image, web_som)
 
 
     def execute(self, browser_env: BrowserEnv):
@@ -73,9 +76,7 @@ class TypeAction(Action):
                  action_content: str='', # click som id
                  action_type: ActionType=ActionType.CLICK):
 
-        super().__init__(action_type, action_target_id, action_content)
-        self.web_image = web_image
-        self.web_som = web_som
+        super().__init__(action_type, action_target_id, action_content, web_image, web_som)
 
 
     def execute(self, browser_env: BrowserEnv):

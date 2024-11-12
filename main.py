@@ -1,4 +1,5 @@
 import asyncio
+from importlib.metadata import metadata
 
 from PIL.Image import Image
 from PIL.ImageQt import ImageQt, QImage
@@ -16,15 +17,18 @@ from playwright.sync_api import sync_playwright
 
 from browser.actions import ClickAction, ActionType, TypeAction
 from browser.browser_env import PlaywrightBrowserEnv, ScreenshotThread, BrowserStartThread, NavigateThread
+from project.manager import new_project, ProjectManager
+from project.metadata import ProjectMetadata
 from ui.action_input_dialog import ActionInputBox
 from ui.new_project_input_dialog import NewProjectInputDialog
+from ui.open_project_input_dialog import OpenProjectInputDialog
 from utils.image_util import pil_image_to_qpixmap
 from web_parser.model_manager import ModelManager
-from web_parser.omni_parser import WebParserThread, WebSOM, initialize_models
-
+from web_parser.omni_parser import WebParserThread, WebSOM, initialize_models, process_image_with_models
 
 
 class MainWindow(QMainWindow):
+
     def __init__(self):
         super().__init__()
 
@@ -33,6 +37,13 @@ class MainWindow(QMainWindow):
             caption_model_name="blip2",
             caption_model_path="models/icon_caption_blip2"
         )
+
+        browser = PlaywrightBrowserEnv()
+        self.browser = browser
+        self.browser.start_browser_sync()
+
+        self.project_manager=None
+
 
 
         # Set the main window properties
@@ -137,11 +148,11 @@ class MainWindow(QMainWindow):
 
         # Add action for new project
         new_action = QAction("New Project", self)
-        new_action.triggered.connect(self.open_new_project_dialog)
+        new_action.triggered.connect(self.new_project_dialog)
         toolbar.addAction(new_action)
 
         open_action = QAction("Open Project", self)
-        # new_action.triggered.connect(self.open_new_project_dialog)
+        open_action.triggered.connect(self.open_project_dialog)
         toolbar.addAction(open_action)
 
 
@@ -150,22 +161,15 @@ class MainWindow(QMainWindow):
     """
 
     def capture_screenshot(self):
-        # Get URL from input field
         url = self.url_input.text()
         if url:
-            browser = PlaywrightBrowserEnv()
-            self.browser = browser
 
-            browser.start_browser_sync()
-            browser.navigate_to_sync(url)
+            self.browser.start_browser_sync()
+            self.browser.navigate_to_sync(url)
 
-            self.current_web_image = browser.take_full_screenshot_sync()
+            self.current_web_image = self.browser.take_full_screenshot_sync()
             self.display_screenshot(self.current_web_image)
 
-            # print("screenshot")
-            # self.screenshot_thread = ScreenshotThread(browser)
-            # self.screenshot_thread.finished_signal.connect(self.display_screenshot)
-            # self.screenshot_thread.start()
 
     def display_screenshot(self, pil_image):
         self.pixmap = pil_image_to_qpixmap(pil_image)
@@ -208,22 +212,9 @@ class MainWindow(QMainWindow):
             print(parsed_content)
             self.som_list.addItem(parsed_content)
 
-
         for i in range(len(ocr_bbox_rslt[0])):
             print(ocr_bbox_rslt[0][i], end=' -> ')
             print(ocr_bbox_rslt[1][i], end='\n\n')
-
-
-
-        # action = ClickAction(
-        #     self.current_web_image,
-        #     web_som,
-        #     action_content='2'
-        # )
-        #
-        # action.execute(self.browser)
-        # self.current_web_image = self.browser.take_full_screenshot_sync()
-        # self.display_screenshot(self.current_web_image)
 
 
     def on_item_double_clicked(self, item):
@@ -264,7 +255,19 @@ class MainWindow(QMainWindow):
                 self.display_screenshot(self.current_web_image)
 
 
-    def open_new_project_dialog(self):
+    def _process_current_state(self):
+        self.current_web_image = self.browser.take_full_screenshot_sync()
+
+        self.som = process_image_with_models(
+            image=self.current_web_image,
+            som_model=self.model_manager.get_som_model(),
+            caption_model_processor=self.model_manager.get_caption_model()
+        )
+
+        self.handle_som(self.som)
+
+
+    def new_project_dialog(self):
 
         dialog = NewProjectInputDialog()
         if dialog.exec() != QDialog.DialogCode.Accepted:
@@ -274,10 +277,60 @@ class MainWindow(QMainWindow):
         project_name = dialog.name_input.text()
         project_url = dialog.url_input.text()
 
+        project_path = project_path+'/'+project_name
+
         logger.info(f"New Project Created:\n "
                     f"Path: {project_path} \n"
                     f"Name: {project_name} \n"
                     f"URL: {project_url}")
+
+        self.browser.navigate_to_sync(project_url)
+
+        self._process_current_state()
+
+        metadata = ProjectMetadata(
+            project_path,
+            project_name,
+            project_url
+        )
+
+        self.project_manager = new_project(
+            browse_env=self.browser,
+            metadata=metadata,
+            web_image=self.current_web_image,
+            som_image=self.som.processed_image,
+            ocr_result=self.current_web_som.ocr_result,
+            parsed_content=self.current_web_som.parsed_content
+        )
+        self.project_manager.save_project()
+
+
+    def open_project_dialog(self):
+
+        dialog = OpenProjectInputDialog()
+        if dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+
+        project_path = dialog.path_input.text()
+
+
+        logger.info(f"New Project Created:\n "
+                    f"Path: {project_path} \n")
+
+
+        metadata = ProjectMetadata(project_path)
+
+        self.project_manager = ProjectManager(metadata, self.browser)
+
+        self.project_manager.load_project()
+
+        som = WebSOM(
+            self.project_manager.fsm_graph.current_state.som_image,
+            self.project_manager.fsm_graph.current_state.ocr_result,
+            self.project_manager.fsm_graph.current_state.parsed_content
+        )
+        self.handle_som(som)
+
 
 
     """
@@ -294,7 +347,6 @@ class MainWindow(QMainWindow):
             ))
 
 
-
     def resizeEvent(self, event):
         # Ensure image resizes when window size changes
         self.resize_image()
@@ -302,7 +354,6 @@ class MainWindow(QMainWindow):
 
 
 
-# Main application setup
 app = QApplication(sys.argv)
 window = MainWindow()
 window.show()
