@@ -17,77 +17,23 @@ from playwright.sync_api import sync_playwright
 from browser.actions import ClickAction, ActionType, TypeAction
 from browser.browser_env import PlaywrightBrowserEnv, ScreenshotThread, BrowserStartThread, NavigateThread
 from ui.action_input_dialog import ActionInputBox
+from ui.new_project_input_dialog import NewProjectInputDialog
+from utils.image_util import pil_image_to_qpixmap
+from web_parser.model_manager import ModelManager
 from web_parser.omni_parser import WebParserThread, WebSOM, initialize_models
 
 
-class ProjectDialog(QDialog):
-    def __init__(self):
-        super().__init__()
-
-        self.setWindowTitle("New Project")
-        self.setGeometry(200, 200, 400, 300)
-
-        # Layout for the dialog
-        layout = QVBoxLayout()
-
-        # Project path selection
-        self.path_label = QLabel("Project Path:")
-        self.path_input = QLineEdit()
-        self.browse_button = QPushButton("Browse")
-        self.browse_button.clicked.connect(self.browse_path)
-
-        # Layout for path selection
-        path_layout = QHBoxLayout()
-        path_layout.addWidget(self.path_input)
-        path_layout.addWidget(self.browse_button)
-
-        # Add path selection to the main layout
-        layout.addWidget(self.path_label)
-        layout.addLayout(path_layout)
-
-        # Form layout for additional project details
-        form_layout = QFormLayout()
-        self.name_input = QLineEdit()
-        self.description_input = QLineEdit()
-        self.author_input = QLineEdit()
-        self.date_input = QLineEdit()
-
-        form_layout.addRow("Project Name:", self.name_input)
-        form_layout.addRow("Project Name:", self.name_input)
-
-        # form_layout.addRow("Description:", self.description_input)
-        # form_layout.addRow("Author:", self.author_input)
-        # form_layout.addRow("Date:", self.date_input)
-
-        layout.addLayout(form_layout)
-
-        # Save and cancel buttons
-        button_layout = QHBoxLayout()
-        self.save_button = QPushButton("Save")
-        self.save_button.clicked.connect(self.accept)  # Accept dialog
-        self.cancel_button = QPushButton("Cancel")
-        self.cancel_button.clicked.connect(self.reject)  # Reject dialog
-        button_layout.addWidget(self.save_button)
-        button_layout.addWidget(self.cancel_button)
-
-        layout.addLayout(button_layout)
-        self.setLayout(layout)
-
-    def browse_path(self):
-        # Open file dialog to select directory path
-        path = QFileDialog.getExistingDirectory(self, "Select Project Directory")
-        if path:
-            self.path_input.setText(path)
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.som_model, self.caption_model_processor = initialize_models(
+        self.model_manager = ModelManager(
             som_model_path='models/icon_detect/best.pt',
             caption_model_name="blip2",
             caption_model_path="models/icon_caption_blip2"
         )
+
 
         # Set the main window properties
         self.setWindowTitle("web2graph")
@@ -150,31 +96,6 @@ class MainWindow(QMainWindow):
         input_layout.addWidget(self.url_input)
         input_layout.addWidget(self.capture_button)
 
-        # Add other form fields (e.g., Project Name, Description, Author, Date)
-        # form_layout = QFormLayout()
-        # self.name_input = QLineEdit()
-        # self.description_input = QLineEdit()
-        # self.author_input = QLineEdit()
-        # self.date_input = QLineEdit()
-        #
-        # form_layout.addRow("Project Name:", self.name_input)
-        # form_layout.addRow("Description:", self.description_input)
-        # form_layout.addRow("Author:", self.author_input)
-        # form_layout.addRow("Date:", self.date_input)
-        #
-        # # Add the form layout to the input layout
-        # input_layout.addLayout(form_layout)
-
-        # Save button at the bottom
-        # self.save_button = QPushButton("Save")
-        # self.save_button.clicked.connect(self.save_project)
-        # input_layout.addWidget(self.save_button)
-
-        # Set right side layout
-        # right_widget.setLayout(input_layout)
-
-
-
 
         # som = QVBoxLayout()
         self.som_list = QListWidget()
@@ -191,7 +112,7 @@ class MainWindow(QMainWindow):
 
 
 
-
+        #  ====================== Layout ===========================
         # Add widgets to splitter
         self.splitter.addWidget(left_widget)
         self.splitter.addWidget(right_widget)
@@ -247,7 +168,7 @@ class MainWindow(QMainWindow):
             # self.screenshot_thread.start()
 
     def display_screenshot(self, pil_image):
-        self.pixmap = self._pil_image_to_qpixmap(pil_image)
+        self.pixmap = pil_image_to_qpixmap(pil_image)
         self.resize_image()
 
 
@@ -256,24 +177,17 @@ class MainWindow(QMainWindow):
     """
 
     def gen_som(self):
-
-        # self.screenshot_thread = WebParserThread(
-        #     self.current_web_image,
-        #     som_model_path='models/icon_detect/best.pt',
-        #     caption_model_name="blip2",
-        #     caption_model_path="models/icon_caption_blip2"
-        # )
-
         self.screenshot_thread = WebParserThread(
             self.current_web_image,
-            som_model=self.som_model,
-            caption_model_processor=self.caption_model_processor
+            som_model=self.model_manager.get_som_model(),
+            caption_model_processor=self.model_manager.get_caption_model()
         )
 
         self.screenshot_thread.result_signal.connect(
             self.handle_som
         )
         self.screenshot_thread.start()
+
 
     def handle_som(self, web_som: WebSOM):
 
@@ -310,6 +224,7 @@ class MainWindow(QMainWindow):
         # action.execute(self.browser)
         # self.current_web_image = self.browser.take_full_screenshot_sync()
         # self.display_screenshot(self.current_web_image)
+
 
     def on_item_double_clicked(self, item):
         list_idx = self.som_list.row(item)
@@ -349,7 +264,26 @@ class MainWindow(QMainWindow):
                 self.display_screenshot(self.current_web_image)
 
 
+    def open_new_project_dialog(self):
 
+        dialog = NewProjectInputDialog()
+        if dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+
+        project_path = dialog.path_input.text()
+        project_name = dialog.name_input.text()
+        project_url = dialog.url_input.text()
+
+        logger.info(f"New Project Created:\n "
+                    f"Path: {project_path} \n"
+                    f"Name: {project_name} \n"
+                    f"URL: {project_url}")
+
+
+    """
+    Utils
+    
+    """
 
     def resize_image(self):
         # Adjust the pixmap size to fit the label whenever the splitter is moved
@@ -365,44 +299,6 @@ class MainWindow(QMainWindow):
         # Ensure image resizes when window size changes
         self.resize_image()
         super().resizeEvent(event)
-
-
-    def save_project(self):
-        # Save button logic
-        project_name = self.name_input.text()
-        description = self.description_input.text()
-        author = self.author_input.text()
-        date = self.date_input.text()
-        print("Project Saved!")
-        print(f"Name: {project_name}")
-        print(f"Description: {description}")
-        print(f"Author: {author}")
-        print(f"Date: {date}")
-
-    def open_new_project_dialog(self):
-        # Open the New Project dialog
-        dialog = ProjectDialog()
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            project_path = dialog.path_input.text()
-            project_name = dialog.name_input.text()
-            description = dialog.description_input.text()
-            author = dialog.author_input.text()
-            date = dialog.date_input.text()
-            print("New Project Created!")
-            print(f"Path: {project_path}")
-            print(f"Name: {project_name}")
-            print(f"Description: {description}")
-            print(f"Author: {author}")
-            print(f"Date: {date}")
-
-    def _pil_image_to_qpixmap(self, pil_image):
-        pil_image = pil_image.convert("RGBA")
-        data = pil_image.tobytes("raw", "RGBA")
-        qimage = QImage(data, pil_image.width, pil_image.height, QImage.Format.Format_ARGB32)
-
-        # qt_image = ImageQt(pil_image)
-        qpixmap = QPixmap.fromImage(qimage)
-        return qpixmap
 
 
 

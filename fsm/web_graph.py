@@ -1,21 +1,23 @@
+import json
 from pathlib import Path
-from typing import TextIO
+from typing import TextIO, Any
 
 import yaml
 from PIL import Image
 from loguru import logger
 
-from agent.web_action import WebAction
-from agent.web_state import WebState
-from browser_env import Action, create_id_based_action, ScriptBrowserEnv
-from checkpoint.checkpoint_config import CheckpointConfig
+from browser.actions import Action, ActionType
+from browser.browser_env import PlaywrightBrowserEnv
+from fsm.web_action import WebAction
+from fsm.web_state import WebState
+from project_mgr.checkpoint_config import CheckpointConfig
 from fsm.abs.graph import FSMGraph
 
 
 class WebGraph(FSMGraph):
     def __init__(self,
                  root_state: WebState = None,
-                 browse_env: ScriptBrowserEnv = None):
+                 browse_env: PlaywrightBrowserEnv = None):
 
         self.browse_env = browse_env
 
@@ -106,6 +108,7 @@ class WebGraph(FSMGraph):
 
 
     def load_checkpoint(self, cfg: CheckpointConfig):
+
         # Define paths to checkpoint files
         base_path = Path(cfg.current_path)
         main_file_path = base_path / cfg.main_file
@@ -122,34 +125,47 @@ class WebGraph(FSMGraph):
             stack_ids = main_data["stack"]
 
         # Load states
-        states = {}
+        states: dict[Any, WebState] = {}
         with open(state_file_path, "r") as state_file:
+
             state_data = yaml.safe_load(state_file)
+
             for state_id, state_info in state_data.items():
+
+                id = state_id["id"]
                 state_name = state_info["name"]
                 state_info_text = state_info["info"]
-                metadata = state_info.get("metadata", {})
-                trajectory_text = state_info.get("trajectory", None)
-                image_path = state_info.get("image_path", None)
                 uuid = state_info.get("uuid", None)
+                image_path = state_info.get("image_path", None)
+                som_path = state_info.get("som_path", None)
+                ocr_result = state_info.get("ocr_result", None)
+                parsed_content = state_info.get("parsed_content", None)
+
 
                 # Load image if path is provided
-                image = None
+                web_image = None
+                som_image = None
                 if image_path:
-                    image = Image.open(image_path)
+                    web_image = Image.open(image_path)
+
+                if som_path:
+                    som_image = Image.open(som_path)
+
+                ocr_result_ = json.loads(ocr_result)
+                parsed_content_ = json.loads(parsed_content)
+
 
                 # Reconstruct state object
-                # observation and trajectory are None, lazy fetch
                 state = WebState(
                     state_name,
                     state_info_text,
-                    observation=None,
-                    browse_env=self.browse_env,
-                    image=image,
-                    trajectory=None,
-                    metadata=metadata
+                    web_image,
+                    som_image,
+                    ocr_result_,
+                    parsed_content_,
+                    self.browse_env
                 )
-                state.id = state_id  # Set state id explicitly
+                state.id = state_id
                 state.uuid = uuid
                 states[state_id] = state
 
@@ -158,63 +174,66 @@ class WebGraph(FSMGraph):
                 print(state)
 
         # Load actions
-        actions = {}
+        actions: dict[Any, WebAction] = {}
         with open(action_file_path, "r") as action_file:
+
             action_data = yaml.safe_load(action_file)
+
             for action_id, action_info in action_data.items():
+
                 action_name = action_info["name"]
                 action_info_text = action_info["info"]
-
-                action_raw = action_info["action_raw"]
                 uuid = action_info["uuid"]
+                action_type = action_info["action_type"]
+                action_content = action_info["action_content"]
+                action_target_id = action_info["action_target_id"]
 
-                try:
-                    action_type: Action = create_id_based_action(action_raw)
-                    action_type["raw_prediction"] = action_raw
-                except Exception as e:
-                    logger.error(f"Action execute error: " + str(e))
-                    continue
+
+                action: Action = Action(
+                    ActionType[action_type],
+                    action_target_id,
+                    action_content
+                )
+
 
                 # Reconstruct action object
-                action = WebAction(
+                web_action = WebAction(
                     action_name,
                     action_info_text,
-                    action_type,
+                    action,
                     self.browse_env
                 )
                 action.id = action_id  # Set action id explicitly
                 action.uuid = uuid
-                actions[action_id] = action
+                actions[action_id] = web_action
 
                 logger.info(f"load action: {action_id}")
                 print(action)
 
+
         # Load edges and reconstruct connections
         with open(edge_file_path, "r") as edge_file:
+
             edge_data = yaml.safe_load(edge_file)
+
             for edge_id, edge_info in edge_data.items():
+
                 from_state_id = edge_info["from_state"]
                 to_state_id = edge_info["to_state"]
                 action_id = edge_info["action"]
 
-                if to_state_id not in states:
-                    logger.warning(f"to_state_id: {to_state_id} not in States")
-                    from_state.to_action.append(action)
-                    action.to_state.append(WebState(
-                        "", "Bad State",
-                        None, browse_env=self.browse_env,
-                    ))
-                    continue
-
-                from_state = states[from_state_id]
-                to_state = states[to_state_id]
-                action = actions[action_id]
 
                 # Establish the action and state transitions
+                from_state = states[from_state_id]
+                to_state = states[to_state_id]
+                mid_action = actions[action_id]
+
                 if action not in from_state.to_action:
                     from_state.to_action.append(action)
-                if to_state not in action.to_state:
-                    action.to_state.append(to_state)
+
+                if to_state not in mid_action.to_state:
+                    mid_action.to_state.append(to_state)
+
 
         # Set root state, current state, and restore visited and stack attributes
         self.root_state = states[root_state_id]
