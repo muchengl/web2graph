@@ -92,6 +92,7 @@ class PlaywrightBrowserEnv(BrowserEnv):
 
     def click_at_position_sync(self, x: int, y: int):
         self.page.mouse.click(x, y)
+        sleep(3)
 
     async def input_at_position(self, x: int, y: int, text: str):
         await self.page.mouse.click(x, y)

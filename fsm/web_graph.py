@@ -13,10 +13,9 @@ from fsm.web_action import WebAction
 from fsm.web_state import WebState
 from project.checkpoint_config import CheckpointConfig
 from fsm.abs.graph import FSMGraph
-from utils.graph import visualize_graph
+from utils.graph import VGraph
 from web_parser.omni_parser import WebSOM
 import networkx as nx
-import matplotlib.pyplot as plt
 
 
 class WebGraph(FSMGraph):
@@ -24,22 +23,28 @@ class WebGraph(FSMGraph):
                  root_state: WebState = None,
                  browse_env: PlaywrightBrowserEnv = None):
         self.browse_env = browse_env
+        self.v_graph = VGraph()
+
         super().__init__(root_state)
 
 
     def move_to_state(self, target_state: WebState):
+        # reset browse_env
+
+
+        # move to target state
+
         pass
 
 
     def show(self):
-        G = nx.DiGraph()
 
         for edge in self.edges:
             old_state: WebState = edge[0]
             action: WebAction = edge[1]
             new_state: WebState = edge[2]
 
-            self._add_node_pair(G,
+            self.v_graph.add_node_pair(
                                 old_state.id,
                                 action.id,
                                 old_state.state_name,
@@ -47,7 +52,7 @@ class WebGraph(FSMGraph):
                                 'green',
                                 'yellow')
 
-            self._add_node_pair(G,
+            self.v_graph.add_node_pair(
                                 action.id,
                                 new_state.id,
                                 action.action_name,
@@ -55,34 +60,17 @@ class WebGraph(FSMGraph):
                                 'yellow',
                                 'green')
 
-        visualize_graph(G)
+        self.v_graph.visualize_graph_plotly()
 
 
-    def _add_node_pair(elf,
-                      G: nx.DiGraph,
-                      node1_id: str,
-                      node2_id: str,
-                      node1_label: str,
-                      node2_label: str,
-                      node1_color: str = 'yellow',
-                      node2_color: str = 'green'):
-
-        G.add_node(node1_id, label=node1_label, color=node1_color)
-        G.add_node(node2_id, label=node2_label, color=node2_color)
-
-        G.add_edge(node1_id, node2_id)
-
-
-
-    def insert_and_move(self,
-                        action_name:str,
-                        action_info: str,
-                        action: Action,
-                        state_name:str,
-                        state_info:str,
-                        web_image: Image.Image,
-                        som: WebSOM,
-                        ):
+    def insert_node(self,
+                    action_name:str,
+                    action_info: str,
+                    action: Action,
+                    state_name:str,
+                    state_info:str,
+                    web_image: Image.Image,
+                    som: WebSOM):
 
         logger.info("Inserting and move")
 
@@ -104,18 +92,10 @@ class WebGraph(FSMGraph):
         old_state = self.current_state
         self.current_state = new_web_state
 
-        self._add_state(old_state, new_web_action, new_web_state)
+        self._add_state_to_graph(old_state, new_web_action, new_web_state)
 
 
-    def _add_state(self, old_state, new_web_action, new_web_state):
-        old_state.to_action.append(new_web_action)
-        new_web_action.to_state.append(new_web_state)
 
-        new_web_action.from_state.append(old_state)
-        new_web_state.from_action.append(new_web_action)
-
-        # graph
-        self.edges.append([old_state, new_web_action, new_web_state])
 
     def do_checkpoint(self, cfg: CheckpointConfig):
 
@@ -374,7 +354,7 @@ class WebGraph(FSMGraph):
                 to_state = states[to_state_id]
                 mid_action = actions[action_id]
 
-                self._add_state(from_state, mid_action, to_state)
+                self._add_state_to_graph(from_state, mid_action, to_state)
 
                 # if mid_action not in from_state.to_action:
                 #     from_state.to_action.append(mid_action)
@@ -391,3 +371,15 @@ class WebGraph(FSMGraph):
                 #
                 # if mid_action not in to_state.from_action:
                 #     to_state.from_action.append(mid_action)
+
+
+    def _add_state_to_graph(self, old_state, new_web_action, new_web_state):
+        old_state.to_action.append(new_web_action)
+        new_web_action.to_state.append(new_web_state)
+
+        new_web_action.from_state.append(old_state)
+        new_web_state.from_action.append(new_web_action)
+
+        # graph
+        self.edges.append([old_state, new_web_action, new_web_state])
+

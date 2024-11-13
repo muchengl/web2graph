@@ -3,7 +3,7 @@ from PIL.ImageQt import ImageQt, QImage
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QLineEdit, QPushButton, QToolBar, QFormLayout, QSplitter, QFileDialog, QDialog, QListWidget, QScrollArea,
-    QMessageBox
+    QMessageBox, QFrame
 )
 from PyQt6.QtGui import QPixmap, QAction
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
@@ -16,6 +16,7 @@ from browser.browser_env import PlaywrightBrowserEnv, ScreenshotThread, BrowserS
 from project.manager import new_project, ProjectManager
 from project.metadata import ProjectMetadata
 from ui.action_input_dialog import ActionInputBox
+from ui.image_dialog import ImageDialog
 from ui.new_project_input_dialog import NewProjectInputDialog
 from ui.open_project_input_dialog import OpenProjectInputDialog
 from utils.image_util import pil_image_to_qpixmap
@@ -101,22 +102,59 @@ class MainWindow(QMainWindow):
         input_layout = QVBoxLayout()
 
 
+        # project information
         self.label_title = QLabel(f"Please open or create a project.")
-        self.label_title.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        # self.label_title.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         self.label_title.setWordWrap(True)
         input_layout.addWidget(self.label_title)
 
+        self.add_horizontal_line(input_layout)
+
+
+        # action list
+        self.action_list_title = QLabel(f"Action List:")
 
         self.som_list = QListWidget()
         self.som_list.setFixedHeight(200)
+
+        input_layout.addWidget(self.action_list_title)
         input_layout.addWidget(self.som_list)
         self.som_list.itemDoubleClicked.connect(self.action_list_double_clicked)
 
-        # self.capture_button = QPushButton("")
-        # self.capture_button.clicked.connect(self.gen_som)
-        # input_layout.addWidget(self.capture_button)
+        self.add_horizontal_line(input_layout)
+
+        # ====================== hide ===========================
+        self.current_state_info = QLabel(f"Current State Info:")
+        input_layout.addWidget(self.current_state_info)
+
+        # Add state input form elements to the right-side layout
+        self.action_name_input = QLineEdit()
+        self.action_info_input = QLineEdit()
+
+        self.state_name_input = QLineEdit()
+        self.state_info_input = QLineEdit()
+
+        self.save_button = QPushButton("Save")
+        self.save_button.clicked.connect(self.save_state)
+
+        # State form layout to collect state name and info
+        self.state_form_layout = QFormLayout()
+        self.state_form_layout.addRow("Action Name:", self.action_name_input)
+        self.state_form_layout.addRow("Action Info:", self.action_info_input)
+        self.state_form_layout.addRow("State Name:", self.state_name_input)
+        self.state_form_layout.addRow("State Info:", self.state_info_input)
+        input_layout.addLayout(self.state_form_layout)
+        input_layout.addWidget(self.save_button)
+
+        self.add_horizontal_line(input_layout)
+
+        # Current Webpage
+        self.capture_button = QPushButton("Current Webpage")
+        self.capture_button.clicked.connect(self.capture_current_web_page)
+        input_layout.addWidget(self.capture_button)
 
         right_widget.setLayout(input_layout)
+
 
 
 
@@ -137,43 +175,6 @@ class MainWindow(QMainWindow):
 
         # Add the splitter to the main layout
         main_layout.addWidget(self.splitter)
-
-
-
-        # ====================== hide ===========================
-        # Add state input form elements to the right-side layout
-        self.action_name_input = QLineEdit()
-        self.action_info_input = QLineEdit()
-
-        self.state_name_input = QLineEdit()
-        self.state_info_input = QLineEdit()
-
-        self.save_button = QPushButton("Save")
-        self.save_button.clicked.connect(self.save_state)
-
-        # State form layout to collect state name and info
-        self.state_form_layout = QFormLayout()
-        self.state_form_layout.addRow("Action Name:", self.action_name_input)
-        self.state_form_layout.addRow("Action Info:", self.action_info_input)
-        self.state_form_layout.addRow("State Name:", self.state_name_input)
-        self.state_form_layout.addRow("State Info:", self.state_info_input)
-        input_layout.addLayout(self.state_form_layout)
-        input_layout.addWidget(self.save_button)
-
-        # Initially hide the state form until an action is executed
-        self.state_form_layout.labelForField(self.action_name_input).setVisible(False)
-        self.state_form_layout.labelForField(self.action_info_input).setVisible(False)
-        self.state_form_layout.labelForField(self.state_name_input).setVisible(False)
-        self.state_form_layout.labelForField(self.state_info_input).setVisible(False)
-
-        self.action_name_input.setVisible(False)
-        self.action_info_input.setVisible(False)
-        self.state_name_input.setVisible(False)
-        self.state_info_input.setVisible(False)
-
-        self.save_button.setVisible(False)
-
-
 
 
 
@@ -232,6 +233,14 @@ class MainWindow(QMainWindow):
                                  f"Path: {self.project_manager.metadata.path} \n"
                                  f"URL: {self.project_manager.metadata.url} \n")
 
+        self._show_state_info(
+            '',
+            '',
+            self.project_manager.fsm_graph.current_state.state_name,
+            self.project_manager.fsm_graph.current_state.state_info
+        )
+
+
     def open_project_dialog(self):
 
         dialog = OpenProjectInputDialog()
@@ -247,9 +256,11 @@ class MainWindow(QMainWindow):
 
         metadata = ProjectMetadata(project_path)
 
+
         # load project
         self.project_manager = ProjectManager(metadata, self.browser)
         self.project_manager.load_project()
+
         self.project_manager.fsm_graph.current_state = self.project_manager.fsm_graph.root_state
 
         # init image
@@ -261,14 +272,28 @@ class MainWindow(QMainWindow):
         self.handle_som(som)
         self.current_web_image = self.project_manager.fsm_graph.current_state.web_image
 
+
         # move to root state
         self.browser.navigate_to_sync(self.project_manager.url)
-
 
         self.label_title.setText(f"Name: {self.project_manager.metadata.name} \n"
                                  f"Path: {self.project_manager.metadata.path} \n"
                                  f"URL: {self.project_manager.metadata.url} \n")
         self.add_graph_bar()
+
+        self._show_state_info(
+            '',
+            '',
+            self.project_manager.fsm_graph.current_state.state_name,
+            self.project_manager.fsm_graph.current_state.state_info
+        )
+
+
+    def capture_current_web_page(self):
+        image = self.browser.take_full_screenshot_sync()
+        image.save("current_web_page.png")
+        d = ImageDialog("current_web_page.png")
+        d.exec()
 
 
     """
@@ -287,11 +312,7 @@ class MainWindow(QMainWindow):
             return
 
         selected_action, action_content, action_name, action_info = box.get_data()
-        logger.info(f"Action: {selected_action} , action_content: {action_content}, Info: {action_info}")
-
-        self.action_content=action_content
-        self.action_name=action_name
-        self.action_info=action_info
+        logger.info(f"Action: {selected_action} , Action_content: {action_content}, Info: {action_info}")
 
         # execute action
         self.executed_action = execute_action(
@@ -307,6 +328,14 @@ class MainWindow(QMainWindow):
         self.display_screenshot(self.current_web_som.processed_image)
 
 
+
+        self._show_state_info(
+            action_name,
+            action_info,
+            self.project_manager.fsm_graph.current_state.state_name,
+            self.project_manager.fsm_graph.current_state.state_info
+        )
+
         # # save FSM Graph
         # self.project_manager.fsm_graph.insert_and_move(
         #     action_name=action_name,
@@ -319,20 +348,19 @@ class MainWindow(QMainWindow):
         # )
         # self.project_manager.save_project()
 
-        self.action_name_input.setText(action_name)
-        self.action_info_input.setText(action_info)
 
-        self.state_form_layout.labelForField(self.action_name_input).setVisible(True)
-        self.state_form_layout.labelForField(self.action_info_input).setVisible(True)
-        self.state_form_layout.labelForField(self.state_name_input).setVisible(True)
-        self.state_form_layout.labelForField(self.state_info_input).setVisible(True)
-
-        self.action_name_input.setVisible(True)
-        self.action_info_input.setVisible(True)
-        self.state_name_input.setVisible(True)
-        self.state_info_input.setVisible(True)
-
-        self.save_button.setVisible(True)
+        #
+        # self.state_form_layout.labelForField(self.action_name_input).setVisible(True)
+        # self.state_form_layout.labelForField(self.action_info_input).setVisible(True)
+        # self.state_form_layout.labelForField(self.state_name_input).setVisible(True)
+        # self.state_form_layout.labelForField(self.state_info_input).setVisible(True)
+        #
+        # self.action_name_input.setVisible(True)
+        # self.action_info_input.setVisible(True)
+        # self.state_name_input.setVisible(True)
+        # self.state_info_input.setVisible(True)
+        #
+        # self.save_button.setVisible(True)
 
 
 
@@ -344,7 +372,7 @@ class MainWindow(QMainWindow):
         state_info = self.state_info_input.text()
 
         # Execute the save FSM Graph code with the inputted state name and info
-        self.project_manager.fsm_graph.insert_and_move(
+        self.project_manager.fsm_graph.insert_node(
             action_name=action_name,
             action_info=action_info,
             action=self.executed_action,
@@ -356,22 +384,32 @@ class MainWindow(QMainWindow):
         self.project_manager.save_project()
 
         # Hide the state form after saving
-        self.state_form_layout.labelForField(self.action_name_input).setVisible(False)
-        self.state_form_layout.labelForField(self.action_info_input).setVisible(False)
-        self.state_form_layout.labelForField(self.state_name_input).setVisible(False)
-        self.state_form_layout.labelForField(self.state_info_input).setVisible(False)
-
-        self.action_name_input.setVisible(False)
-        self.action_info_input.setVisible(False)
-        self.state_name_input.setVisible(False)
-        self.state_info_input.setVisible(False)
-
-        self.save_button.setVisible(False)
+        # self.state_form_layout.labelForField(self.action_name_input).setVisible(False)
+        # self.state_form_layout.labelForField(self.action_info_input).setVisible(False)
+        # self.state_form_layout.labelForField(self.state_name_input).setVisible(False)
+        # self.state_form_layout.labelForField(self.state_info_input).setVisible(False)
+        #
+        # self.action_name_input.setVisible(False)
+        # self.action_info_input.setVisible(False)
+        # self.state_name_input.setVisible(False)
+        # self.state_info_input.setVisible(False)
+        #
+        # self.save_button.setVisible(False)
 
         # Clear the form inputs for next use
-        self.state_name_input.clear()
-        self.state_info_input.clear()
+        # self.state_name_input.clear()
+        # self.state_info_input.clear()
 
+
+    def _show_state_info(self,
+                         action_name='',
+                         action_info='',
+                         state_name='',
+                         state_info=''):
+        self.action_name_input.setText(action_name)
+        self.action_info_input.setText(action_info)
+        self.state_name_input.setText(state_name)
+        self.state_name_input.setText(state_info)
 
 
     def _process_current_state(self):
@@ -444,6 +482,14 @@ class MainWindow(QMainWindow):
         fsm_action = QAction("Show FSM Graph", self)
         fsm_action.triggered.connect(self.project_manager.fsm_graph.show)
         self.toolbar.addAction(fsm_action)
+
+    def add_horizontal_line(self, layout):
+        line = QFrame()
+        line.setFrameShape(QFrame.Shape.HLine)
+        line.setFrameShadow(QFrame.Shadow.Sunken)
+        layout.addWidget(line)
+
+
 
 if __name__ == '__main__':
 

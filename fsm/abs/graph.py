@@ -45,6 +45,14 @@ class Graph(ABC):
     def load_checkpoint(self, cfg: CheckpointConfig):
         pass
 
+    @abstractmethod
+    def show(self):
+        pass
+
+    @abstractmethod
+    def insert_node(self):
+        pass
+
 
 class FSMGraph(Graph):
     def __init__(self, root_state):
