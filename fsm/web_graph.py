@@ -1,4 +1,5 @@
 import json
+from collections import deque
 from pathlib import Path
 from typing import TextIO, Any
 
@@ -12,20 +13,109 @@ from fsm.web_action import WebAction
 from fsm.web_state import WebState
 from project.checkpoint_config import CheckpointConfig
 from fsm.abs.graph import FSMGraph
+from utils.graph import visualize_graph
 from web_parser.omni_parser import WebSOM
+import networkx as nx
+import matplotlib.pyplot as plt
 
 
 class WebGraph(FSMGraph):
     def __init__(self,
                  root_state: WebState = None,
                  browse_env: PlaywrightBrowserEnv = None):
-
         self.browse_env = browse_env
-
         super().__init__(root_state)
 
-    def insert_and_move(self, action: Action):
-        web_action = WebAction()
+
+    def move_to_state(self, target_state: WebState):
+        pass
+
+
+    def show(self):
+        G = nx.DiGraph()
+
+        for edge in self.edges:
+            old_state: WebState = edge[0]
+            action: WebAction = edge[1]
+            new_state: WebState = edge[2]
+
+            self._add_node_pair(G,
+                                old_state.id,
+                                action.id,
+                                old_state.state_name,
+                                action.action_name,
+                                'green',
+                                'yellow')
+
+            self._add_node_pair(G,
+                                action.id,
+                                new_state.id,
+                                action.action_name,
+                                new_state.state_name,
+                                'yellow',
+                                'green')
+
+        visualize_graph(G)
+
+
+    def _add_node_pair(elf,
+                      G: nx.DiGraph,
+                      node1_id: str,
+                      node2_id: str,
+                      node1_label: str,
+                      node2_label: str,
+                      node1_color: str = 'yellow',
+                      node2_color: str = 'green'):
+
+        G.add_node(node1_id, label=node1_label, color=node1_color)
+        G.add_node(node2_id, label=node2_label, color=node2_color)
+
+        G.add_edge(node1_id, node2_id)
+
+
+
+    def insert_and_move(self,
+                        action_name:str,
+                        action_info: str,
+                        action: Action,
+                        state_name:str,
+                        state_info:str,
+                        web_image: Image.Image,
+                        som: WebSOM,
+                        ):
+
+        logger.info("Inserting and move")
+
+        new_web_action = WebAction(
+            action_name=action_name,
+            action_info=action_info,
+            action=action,
+            browse_env=self.browse_env,
+        )
+
+        new_web_state = WebState(
+            state_name=state_name,
+            state_info=state_info,
+            web_image=web_image,
+            som=som,
+            browse_env=self.browse_env,
+        )
+
+        old_state = self.current_state
+        self.current_state = new_web_state
+
+        self._add_state(old_state, new_web_action, new_web_state)
+
+
+    def _add_state(self, old_state, new_web_action, new_web_state):
+        old_state.to_action.append(new_web_action)
+        new_web_action.to_state.append(new_web_state)
+
+        new_web_action.from_state.append(old_state)
+        new_web_state.from_action.append(new_web_action)
+
+        # graph
+        self.edges.append([old_state, new_web_action, new_web_state])
 
     def do_checkpoint(self, cfg: CheckpointConfig):
 
@@ -50,6 +140,7 @@ class WebGraph(FSMGraph):
 
             self._graph_checkpoint(main_file, cfg)
             self._traverse_graph_checkpoint(self.root_state, edge_file, state_file, action_file, cfg, static_path)
+
 
     def _graph_checkpoint(self, main_file: TextIO, cfg: CheckpointConfig):
         # logger.info("")
@@ -210,6 +301,7 @@ class WebGraph(FSMGraph):
 
         return states
 
+
     def _load_actions(self, action_file_path):
         actions: dict[Any, WebAction] = {}
         with open(action_file_path, "r") as action_file:
@@ -227,14 +319,8 @@ class WebGraph(FSMGraph):
                 action_content = action_info["action_content"]
                 action_target_id = action_info["action_target_id"]
 
-
-                # action: Action = Action(
-                #     ActionType[action_type],
-                #     action_target_id,
-                #     action_content
-                # )
-
-                if action_type == ActionType['CLICK']:
+                action: Action = None
+                if ActionType[action_type] == ActionType['CLICK']:
                     action: Action = ClickAction(
                         None,
                         None,
@@ -242,7 +328,7 @@ class WebGraph(FSMGraph):
                         action_content,
                         ActionType[action_type]
                     )
-                elif action_type == ActionType['TYPE']:
+                elif ActionType[action_type] == ActionType['TYPE']:
                     action: Action = TypeAction(
                         None,
                         None,
@@ -259,8 +345,8 @@ class WebGraph(FSMGraph):
                     action,
                     self.browse_env
                 )
-                action.id = action_id  # Set action id explicitly
-                action.uuid = uuid
+                web_action.id = action_id
+                web_action.uuid = uuid
                 actions[action_id] = web_action
 
                 logger.info(f"load action: {action_id}")
@@ -277,7 +363,6 @@ class WebGraph(FSMGraph):
             if edge_data is None:
                 return
 
-
             for edge_id, edge_info in edge_data.items():
 
                 from_state_id = edge_info["from_state"]
@@ -289,18 +374,20 @@ class WebGraph(FSMGraph):
                 to_state = states[to_state_id]
                 mid_action = actions[action_id]
 
-                if mid_action not in from_state.to_action:
-                    from_state.to_action.append(mid_action)
+                self._add_state(from_state, mid_action, to_state)
 
-                if from_state not in mid_action.from_state:
-                    mid_action.from_state.append(from_state)
-
-                if to_state not in mid_action.to_state:
-                    mid_action.to_state.append(to_state)
-
-                    # Action based on previous State
-                    mid_action.action.web_som = from_state.som
-                    mid_action.action.web_image = from_state.web_image
-
-                if mid_action not in to_state.from_action:
-                    to_state.from_action.append(mid_action)
+                # if mid_action not in from_state.to_action:
+                #     from_state.to_action.append(mid_action)
+                #
+                # if from_state not in mid_action.from_state:
+                #     mid_action.from_state.append(from_state)
+                #
+                # if to_state not in mid_action.to_state:
+                #     mid_action.to_state.append(to_state)
+                #
+                #     # Action based on previous State
+                #     mid_action.action.web_som = from_state.som
+                #     mid_action.action.web_image = from_state.web_image
+                #
+                # if mid_action not in to_state.from_action:
+                #     to_state.from_action.append(mid_action)

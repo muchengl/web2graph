@@ -1,4 +1,6 @@
 import asyncio
+
+import numpy as np
 from PyQt6.QtCore import QThread, pyqtSignal
 from loguru import logger
 
@@ -18,7 +20,12 @@ class WebSOM:
         self.label_coordinates = label_coordinates
         logger.info(type(label_coordinates))
 
-        self.label_coordinates = {key: value.tolist() for key, value in label_coordinates.items()}
+        # self.label_coordinates = {key: value.tolist() for key, value in label_coordinates.items()}
+
+        self.label_coordinates = {
+            key: value.tolist() if isinstance(value, np.ndarray) else value
+            for key, value in label_coordinates.items()
+        }
 
         self.parsed_content = parsed_content
 

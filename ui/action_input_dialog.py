@@ -16,8 +16,11 @@ class ActionInputBox(QDialog):
         self.action_combo_box = QComboBox(self)
         self.action_combo_box.addItems(action_types)
 
-        self.text_edit = QPlainTextEdit(self)
-        self.text_edit.setPlaceholderText("Action content (for type only)")
+        self.action_content = QPlainTextEdit(self)
+        self.action_content.setPlaceholderText("Action content (for type only)")
+
+        self.info = QPlainTextEdit(self)
+        self.info.setPlaceholderText("Add a description for this action")
 
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         self.button_box.accepted.connect(self.accept)
@@ -27,12 +30,15 @@ class ActionInputBox(QDialog):
         layout.addWidget(self.prompt_label)
         layout.addWidget(QLabel("Action Type:"))
         layout.addWidget(self.action_combo_box)
-        layout.addWidget(self.text_edit)
+        layout.addWidget(self.action_content)
+        layout.addWidget(self.info)
         layout.addWidget(self.button_box)
         self.setLayout(layout)
 
     def get_data(self):
         selected_action = self.action_combo_box.currentText()
-        input_text = self.text_edit.toPlainText()
-        return selected_action, input_text
+        action_content = self.action_content.toPlainText()
+        action_info = self.info.toPlainText()
+
+        return selected_action, action_content, action_info
 

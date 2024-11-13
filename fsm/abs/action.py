@@ -21,7 +21,7 @@ class GraphAction(ABC):
         self.from_state: list['GraphState'] = []
         self.to_state: list['GraphState'] = []
 
-        from fsm import GraphState
+        from fsm.abs import GraphState
 
     @abstractmethod
     def generate_id(self):

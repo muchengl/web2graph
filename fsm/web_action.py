@@ -51,7 +51,7 @@ class WebAction(GraphAction):
             "name": self.action_name,
             "info": self.action_info,
             "uuid": str(self.uuid),
-            "action_type": self.action.type,
+            "action_type": str(self.action.type.value),
             "action_content": self.action.action_content,
             "action_target_id": self.action.action_target_id,
         }}

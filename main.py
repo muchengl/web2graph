@@ -1,6 +1,3 @@
-import asyncio
-from importlib.metadata import metadata
-
 from PIL.Image import Image
 from PIL.ImageQt import ImageQt, QImage
 from PyQt6.QtWidgets import (
@@ -13,9 +10,8 @@ from PyQt6.QtCore import Qt, QThread, pyqtSignal
 import sys
 
 from loguru import logger
-from playwright.sync_api import sync_playwright
 
-from browser.actions import ClickAction, ActionType, TypeAction
+from browser.actions import ClickAction, ActionType, TypeAction, Action, execute_action
 from browser.browser_env import PlaywrightBrowserEnv, ScreenshotThread, BrowserStartThread, NavigateThread
 from project.manager import new_project, ProjectManager
 from project.metadata import ProjectMetadata
@@ -97,7 +93,6 @@ class MainWindow(QMainWindow):
 
 
 
-
         # ====================== Right ===========================
         # Right side: Input fields with a save button and URL input
         right_widget = QWidget()
@@ -113,14 +108,13 @@ class MainWindow(QMainWindow):
         self.som_list = QListWidget()
         self.som_list.setFixedHeight(200)
         input_layout.addWidget(self.som_list)
-        self.som_list.itemDoubleClicked.connect(self.on_item_double_clicked)
+        self.som_list.itemDoubleClicked.connect(self.action_list_double_clicked)
 
-        self.capture_button = QPushButton("Generate SOM")
-        self.capture_button.clicked.connect(self.gen_som)
-        input_layout.addWidget(self.capture_button)
+        # self.capture_button = QPushButton("")
+        # self.capture_button.clicked.connect(self.gen_som)
+        # input_layout.addWidget(self.capture_button)
 
         right_widget.setLayout(input_layout)
-
 
 
 
@@ -155,113 +149,6 @@ class MainWindow(QMainWindow):
         open_action = QAction("Open Project", self)
         open_action.triggered.connect(self.open_project_dialog)
         toolbar.addAction(open_action)
-
-
-    """
-    Capture Screenshot
-    """
-
-    def capture_screenshot(self):
-        url = self.url_input.text()
-        if url:
-
-            self.browser.start_browser_sync()
-            self.browser.navigate_to_sync(url)
-
-            self.current_web_image = self.browser.take_full_screenshot_sync()
-            self.display_screenshot(self.current_web_image)
-
-
-
-    """
-    Generate SOM
-    """
-
-    def gen_som(self):
-        self.screenshot_thread = WebParserThread(
-            self.current_web_image,
-            som_model=self.model_manager.get_som_model(),
-            caption_model_processor=self.model_manager.get_caption_model()
-        )
-
-        self.screenshot_thread.result_signal.connect(
-            self.handle_som
-        )
-        self.screenshot_thread.start()
-
-
-    def handle_som(self, web_som: WebSOM):
-
-        self.current_web_som = web_som
-
-        processed_image = web_som.processed_image
-        parsed_content_list = web_som.parsed_content
-        label_coordinates = web_som.label_coordinates
-
-        qt_image = ImageQt(processed_image)
-        pixmap = QPixmap.fromImage(qt_image)
-
-        self.pixmap = pixmap
-        self.resize_image()
-
-        self.som_list.clear()
-        for parsed_content in parsed_content_list:
-            print(parsed_content)
-            self.som_list.addItem(parsed_content)
-
-        logger.info(label_coordinates)
-
-
-    def on_item_double_clicked(self, item):
-        list_idx = self.som_list.row(item)
-        # QMessageBox.information(self, "Item Double Clicked", f"You double-clicked item {list_idx + 1}: {item.text()}")
-        logger.info(f"You double-clicked item {list_idx + 1}: {item.text()}")
-
-        box = ActionInputBox(f"{list_idx + 1}: {item.text()}")
-        if box.exec() == QDialog.DialogCode.Accepted:
-            selected_action, input_text = box.get_data()
-            logger.info(f"Action: {selected_action} , {input_text}")
-
-            if ActionType[selected_action] == ActionType.CLICK:
-                logger.info("taking CLICK...")
-                action = ClickAction(
-                    self.current_web_image,
-                    self.current_web_som,
-                    action_target_id=list_idx,
-                    action_content=list_idx
-                )
-
-                action.execute(self.browser)
-                self.current_web_image = self.browser.take_full_screenshot_sync()
-                self.display_screenshot(self.current_web_image)
-
-            elif ActionType[selected_action] == ActionType.TYPE:
-
-                logger.info("taking TYPE...")
-
-                action = TypeAction(
-                    self.current_web_image,
-                    self.current_web_som,
-                    action_target_id=list_idx,
-                    action_content=input_text
-                )
-
-                action.execute(self.browser)
-                self.current_web_image = self.browser.take_full_screenshot_sync()
-                self.display_screenshot(self.current_web_image)
-
-
-    def _process_current_state(self):
-        self.current_web_image = self.browser.take_full_screenshot_sync()
-
-        current_web_som = process_image_with_models(
-            image=self.current_web_image,
-            som_model=self.model_manager.get_som_model(),
-            caption_model_processor=self.model_manager.get_caption_model()
-        )
-
-        self.handle_som(current_web_som)
-
 
     def new_project_dialog(self):
 
@@ -319,9 +206,10 @@ class MainWindow(QMainWindow):
 
         metadata = ProjectMetadata(project_path)
 
+        # load project
         self.project_manager = ProjectManager(metadata, self.browser)
-
         self.project_manager.load_project()
+        self.project_manager.fsm_graph.current_state = self.project_manager.fsm_graph.root_state
 
         som = WebSOM(
             self.project_manager.fsm_graph.current_state.som_image,
@@ -332,19 +220,90 @@ class MainWindow(QMainWindow):
         self.current_web_image = self.project_manager.fsm_graph.current_state.web_image
 
         self.browser.navigate_to_sync(self.project_manager.url)
-        # todo: re take actions, move to current state
-
 
         self.label_title.setText(f"Name: {self.project_manager.metadata.name} \n"
                                  f"Path: {self.project_manager.metadata.path} \n"
                                  f"URL: {self.project_manager.metadata.url} \n")
 
-
+        self.project_manager.fsm_graph.show()
 
     """
     Utils
     
     """
+
+
+    def action_list_double_clicked(self, item):
+        list_idx = self.som_list.row(item)
+
+        logger.info(f"You double-clicked item {list_idx + 1}: {item.text()}")
+
+        box = ActionInputBox(f"{list_idx + 1}: {item.text()}")
+
+        if box.exec() != QDialog.DialogCode.Accepted:
+            return
+
+        selected_action, action_content, action_info = box.get_data()
+        logger.info(f"Action: {selected_action} , action_content: {action_content}, Info: {action_info}")
+
+        executed_action = execute_action(
+            list_idx=list_idx,
+            current_web_image=self.current_web_image,
+            current_web_som=self.current_web_som,
+            browser=self.browser,
+            selected_action=selected_action,
+            action_info=action_info,
+            action_content=action_content
+        )
+
+        self._process_current_state()
+        self.display_screenshot(self.current_web_som.processed_image)
+
+        self.project_manager.fsm_graph.insert_and_move(
+            action_name='',
+            action_info='',
+            action=executed_action,
+            state_name='',
+            state_info='',
+            web_image=self.current_web_image,
+            som=self.current_web_som
+        )
+        self.project_manager.save_project()
+
+
+    def _process_current_state(self):
+        self.current_web_image = self.browser.take_full_screenshot_sync()
+
+        current_web_som = process_image_with_models(
+            image=self.current_web_image,
+            som_model=self.model_manager.get_som_model(),
+            caption_model_processor=self.model_manager.get_caption_model()
+        )
+
+        self.handle_som(current_web_som)
+
+
+    def handle_som(self, web_som: WebSOM):
+
+        self.current_web_som = web_som
+
+        processed_image = web_som.processed_image
+        parsed_content_list = web_som.parsed_content
+        label_coordinates = web_som.label_coordinates
+
+        qt_image = ImageQt(processed_image)
+        pixmap = QPixmap.fromImage(qt_image)
+
+        self.pixmap = pixmap
+        self.resize_image()
+
+        self.som_list.clear()
+        for parsed_content in parsed_content_list:
+            print(parsed_content)
+            self.som_list.addItem(parsed_content)
+
+        logger.info(label_coordinates)
+
 
     def display_screenshot(self, pil_image):
         if pil_image==self.current_web_image:

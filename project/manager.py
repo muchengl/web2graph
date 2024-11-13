@@ -1,4 +1,5 @@
 import os
+import shutil
 
 import yaml
 from PIL.Image import Image
@@ -40,6 +41,24 @@ class ProjectManager:
 
 
     def save_project(self):
+        if os.path.exists(self.checkpoint_config.current_path):
+            os.makedirs(self.checkpoint_config.history_path, exist_ok=True)
+
+            # Find the latest history file index
+            history_files = [
+                f for f in os.listdir(self.checkpoint_config.history_path)
+                if f.startswith("history_") and f[8:].isdigit()
+            ]
+            history_indices = sorted([int(f[8:]) for f in history_files])
+            next_index = history_indices[-1] + 1 if history_indices else 1
+
+            new_history_folder = os.path.join(
+                self.checkpoint_config.history_path,
+                f"history_{next_index}"
+            )
+            shutil.move(self.checkpoint_config.current_path, new_history_folder)
+
+
         self.fsm_graph.do_checkpoint(self.checkpoint_config)
 
         with open(self.metadata_file, "w") as metadata_file:
@@ -73,7 +92,6 @@ def new_project(browse_env: PlaywrightBrowserEnv,
 
     if os.path.exists(metadata.path) is not True:
         os.makedirs(metadata.path)
-
 
 
     root_state = WebState(

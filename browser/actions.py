@@ -61,9 +61,6 @@ class ClickAction(Action):
         position = self.web_som.label_coordinates[str(self.action_target_id)]
         logger.info(f"click position: {position}")
 
-        # avg_x = int((position[0] + position[2]) / 2)
-        # avg_y = int((position[1] + position[3]) / 2)
-
         avg_x = int(position[0] + (position[2]) / 2)
         avg_y = int(position[1] + (position[3]) / 2)
 
@@ -96,9 +93,41 @@ class TypeAction(Action):
         position = self.web_som.label_coordinates[str(self.action_target_id)]
         logger.info(f"type position: {position}")
 
-        # avg_x = int((position[0] + position[2]) / 2)
-        # avg_y = int((position[1] + position[3]) / 2)
         avg_x = int(position[0] + (position[2]) / 2)
         avg_y = int(position[1] + (position[3]) / 2)
 
         browser_env.input_at_position_sync(avg_x, avg_y, self.action_content)
+
+
+def execute_action(list_idx,
+                   current_web_image,
+                   current_web_som,
+                   browser,
+                   selected_action,
+                   action_content,
+                   action_info):
+    action: Action = None
+
+    if ActionType[selected_action] == ActionType.CLICK:
+        logger.info("taking CLICK...")
+
+        action = ClickAction(
+            current_web_image,
+            current_web_som,
+            action_target_id=list_idx,
+            action_content=list_idx
+        )
+
+    elif ActionType[selected_action] == ActionType.TYPE:
+        logger.info("taking TYPE...")
+
+        action = TypeAction(
+            current_web_image,
+            current_web_som,
+            action_target_id=list_idx,
+            action_content=action_content
+        )
+
+    action.execute(browser)
+
+    return action

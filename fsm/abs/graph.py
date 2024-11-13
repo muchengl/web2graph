@@ -18,6 +18,9 @@ class Graph(ABC):
         if root_state is not None:
             self.visited.add(root_state.id)
 
+        # from -> to, [[from, to],[from, to],[from, to]]
+        self.edges = []
+
     @abstractmethod
     def move_to_next_state(self):
        pass
