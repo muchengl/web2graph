@@ -2,6 +2,7 @@ import asyncio
 import uuid, io
 from enum import Enum
 from abc import ABC, abstractmethod
+from time import sleep
 
 from PIL import Image
 from PyQt6.QtCore import QThread, pyqtSignal
@@ -84,6 +85,7 @@ class PlaywrightBrowserEnv(BrowserEnv):
 
     def navigate_to_sync(self, url: str):
         self.page.goto(url)
+        sleep(3)
 
     async def click_at_position(self, x: int, y: int):
         await self.page.mouse.click(x, y)

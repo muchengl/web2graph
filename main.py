@@ -46,6 +46,8 @@ class MainWindow(QMainWindow):
         self.image_som_enable = True
 
 
+
+
         # Set the main window properties
         self.setWindowTitle("web2graph")
         self.showMaximized()  # Set the window to open in full-screen mode
@@ -137,18 +139,57 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(self.splitter)
 
 
+
+        # ====================== hide ===========================
+        # Add state input form elements to the right-side layout
+        self.action_name_input = QLineEdit()
+        self.action_info_input = QLineEdit()
+
+        self.state_name_input = QLineEdit()
+        self.state_info_input = QLineEdit()
+
+        self.save_button = QPushButton("Save")
+        self.save_button.clicked.connect(self.save_state)
+
+        # State form layout to collect state name and info
+        self.state_form_layout = QFormLayout()
+        self.state_form_layout.addRow("Action Name:", self.action_name_input)
+        self.state_form_layout.addRow("Action Info:", self.action_info_input)
+        self.state_form_layout.addRow("State Name:", self.state_name_input)
+        self.state_form_layout.addRow("State Info:", self.state_info_input)
+        input_layout.addLayout(self.state_form_layout)
+        input_layout.addWidget(self.save_button)
+
+        # Initially hide the state form until an action is executed
+        self.state_form_layout.labelForField(self.action_name_input).setVisible(False)
+        self.state_form_layout.labelForField(self.action_info_input).setVisible(False)
+        self.state_form_layout.labelForField(self.state_name_input).setVisible(False)
+        self.state_form_layout.labelForField(self.state_info_input).setVisible(False)
+
+        self.action_name_input.setVisible(False)
+        self.action_info_input.setVisible(False)
+        self.state_name_input.setVisible(False)
+        self.state_info_input.setVisible(False)
+
+        self.save_button.setVisible(False)
+
+
+
+
+
     def create_toolbar(self):
-        toolbar = QToolBar("Project Management")
-        self.addToolBar(toolbar)
+        self.toolbar = QToolBar("Project Management")
+        self.addToolBar(self.toolbar)
 
         # Add action for new project
         new_action = QAction("New Project", self)
         new_action.triggered.connect(self.new_project_dialog)
-        toolbar.addAction(new_action)
+        self.toolbar.addAction(new_action)
 
         open_action = QAction("Open Project", self)
         open_action.triggered.connect(self.open_project_dialog)
-        toolbar.addAction(open_action)
+        self.toolbar.addAction(open_action)
+
 
     def new_project_dialog(self):
 
@@ -211,6 +252,7 @@ class MainWindow(QMainWindow):
         self.project_manager.load_project()
         self.project_manager.fsm_graph.current_state = self.project_manager.fsm_graph.root_state
 
+        # init image
         som = WebSOM(
             self.project_manager.fsm_graph.current_state.som_image,
             self.project_manager.fsm_graph.current_state.label_coordinates,
@@ -219,19 +261,20 @@ class MainWindow(QMainWindow):
         self.handle_som(som)
         self.current_web_image = self.project_manager.fsm_graph.current_state.web_image
 
+        # move to root state
         self.browser.navigate_to_sync(self.project_manager.url)
+
 
         self.label_title.setText(f"Name: {self.project_manager.metadata.name} \n"
                                  f"Path: {self.project_manager.metadata.path} \n"
                                  f"URL: {self.project_manager.metadata.url} \n")
+        self.add_graph_bar()
 
-        self.project_manager.fsm_graph.show()
 
     """
     Utils
     
     """
-
 
     def action_list_double_clicked(self, item):
         list_idx = self.som_list.row(item)
@@ -243,10 +286,15 @@ class MainWindow(QMainWindow):
         if box.exec() != QDialog.DialogCode.Accepted:
             return
 
-        selected_action, action_content, action_info = box.get_data()
+        selected_action, action_content, action_name, action_info = box.get_data()
         logger.info(f"Action: {selected_action} , action_content: {action_content}, Info: {action_info}")
 
-        executed_action = execute_action(
+        self.action_content=action_content
+        self.action_name=action_name
+        self.action_info=action_info
+
+        # execute action
+        self.executed_action = execute_action(
             list_idx=list_idx,
             current_web_image=self.current_web_image,
             current_web_som=self.current_web_som,
@@ -255,20 +303,75 @@ class MainWindow(QMainWindow):
             action_info=action_info,
             action_content=action_content
         )
-
         self._process_current_state()
         self.display_screenshot(self.current_web_som.processed_image)
 
+
+        # # save FSM Graph
+        # self.project_manager.fsm_graph.insert_and_move(
+        #     action_name=action_name,
+        #     action_info=action_info,
+        #     action=executed_action,
+        #     state_name='',
+        #     state_info='',
+        #     web_image=self.current_web_image,
+        #     som=self.current_web_som
+        # )
+        # self.project_manager.save_project()
+
+        self.action_name_input.setText(action_name)
+        self.action_info_input.setText(action_info)
+
+        self.state_form_layout.labelForField(self.action_name_input).setVisible(True)
+        self.state_form_layout.labelForField(self.action_info_input).setVisible(True)
+        self.state_form_layout.labelForField(self.state_name_input).setVisible(True)
+        self.state_form_layout.labelForField(self.state_info_input).setVisible(True)
+
+        self.action_name_input.setVisible(True)
+        self.action_info_input.setVisible(True)
+        self.state_name_input.setVisible(True)
+        self.state_info_input.setVisible(True)
+
+        self.save_button.setVisible(True)
+
+
+
+    def save_state(self):
+        action_name = self.action_name_input.text()
+        action_info = self.action_info_input.text()
+
+        state_name = self.state_name_input.text()
+        state_info = self.state_info_input.text()
+
+        # Execute the save FSM Graph code with the inputted state name and info
         self.project_manager.fsm_graph.insert_and_move(
-            action_name='',
-            action_info='',
-            action=executed_action,
-            state_name='',
-            state_info='',
+            action_name=action_name,
+            action_info=action_info,
+            action=self.executed_action,
+            state_name=state_name,
+            state_info=state_info,
             web_image=self.current_web_image,
             som=self.current_web_som
         )
         self.project_manager.save_project()
+
+        # Hide the state form after saving
+        self.state_form_layout.labelForField(self.action_name_input).setVisible(False)
+        self.state_form_layout.labelForField(self.action_info_input).setVisible(False)
+        self.state_form_layout.labelForField(self.state_name_input).setVisible(False)
+        self.state_form_layout.labelForField(self.state_info_input).setVisible(False)
+
+        self.action_name_input.setVisible(False)
+        self.action_info_input.setVisible(False)
+        self.state_name_input.setVisible(False)
+        self.state_info_input.setVisible(False)
+
+        self.save_button.setVisible(False)
+
+        # Clear the form inputs for next use
+        self.state_name_input.clear()
+        self.state_info_input.clear()
+
 
 
     def _process_current_state(self):
@@ -336,6 +439,11 @@ class MainWindow(QMainWindow):
         else:
             self.display_screenshot(self.current_web_som.processed_image)
 
+
+    def add_graph_bar(self):
+        fsm_action = QAction("Show FSM Graph", self)
+        fsm_action.triggered.connect(self.project_manager.fsm_graph.show)
+        self.toolbar.addAction(fsm_action)
 
 if __name__ == '__main__':
 
