@@ -23,18 +23,59 @@ class WebGraph(FSMGraph):
                  root_state: WebState = None,
                  browse_env: PlaywrightBrowserEnv = None):
         self.browse_env = browse_env
-        self.v_graph = VGraph()
-
         super().__init__(root_state)
 
+        self.v_graph = VGraph(self)
 
-    def move_to_state(self, target_state: WebState):
+
+    def move_to_state(self, target_state: str):
+        logger.info(f"finding: {target_state}")
+
         # reset browse_env
-
+        root_url = self.root_state.url
+        self.browse_env.navigate_to_sync(root_url)
 
         # move to target state
+        root = self.root_state
+        queue = deque([(root, [root])])
+        visited = set()
 
-        pass
+        path_ = []
+
+        while queue:
+            node, path = queue.popleft()
+            if node.id == target_state:
+                path_ = path
+                break
+
+            if node not in visited:
+                visited.add(node)
+
+                if isinstance(node,WebAction):
+                    for neighbor in node.to_state:
+                        if neighbor not in visited:
+                            queue.append((neighbor, path + [neighbor]))
+
+                elif isinstance(node, WebState):
+                    for neighbor in node.to_action:
+                        if neighbor not in visited:
+                            queue.append((neighbor, path + [neighbor]))
+
+        if len(path_)==0:
+            logger.warning(f"can't find path to: {target_state}")
+            return
+
+        for item in path_:
+            if isinstance(item, WebAction):
+                print(f"Action: {item.id}")
+
+                item.action.execute(self.browse_env)
+
+            elif isinstance(item, WebState):
+                print(f"State: {item.id}")
+
+
+
 
 
     def show(self):
@@ -60,7 +101,7 @@ class WebGraph(FSMGraph):
                                 'yellow',
                                 'green')
 
-        self.v_graph.visualize_graph_plotly()
+        self.v_graph.show_graph_popup()
 
 
     def insert_node(self,
@@ -244,6 +285,8 @@ class WebGraph(FSMGraph):
                 label_coordinates = state_info.get("label_coordinates", None)
                 parsed_content = state_info.get("parsed_content", None)
 
+                url = state_info.get("url", None)
+
 
                 # Load image if path is provided
                 web_image = None
@@ -269,7 +312,8 @@ class WebGraph(FSMGraph):
                     state_info_text,
                     web_image,
                     som,
-                    self.browse_env
+                    self.browse_env,
+                    url
                 )
                 state.id = id
                 state.uuid = uuid
@@ -379,6 +423,11 @@ class WebGraph(FSMGraph):
 
         new_web_action.from_state.append(old_state)
         new_web_state.from_action.append(new_web_action)
+
+
+        new_web_action.action.web_som = old_state.som
+        new_web_action.action.web_image = old_state.web_image
+
 
         # graph
         self.edges.append([old_state, new_web_action, new_web_state])

@@ -20,7 +20,8 @@ class WebState(GraphState):
                  state_info: str,
                  web_image: Image,
                  som: WebSOM,
-                 browse_env: PlaywrightBrowserEnv):
+                 browse_env: PlaywrightBrowserEnv,
+                 url=''):
 
         self.browse_env = browse_env
         self.uuid = str(uuid.uuid1())
@@ -33,6 +34,8 @@ class WebState(GraphState):
         self.som_image = som.processed_image
         self.label_coordinates = som.label_coordinates
         self.parsed_content = som.parsed_content
+
+        self.url = url
 
         super().__init__(state_name, state_info)
 
@@ -99,6 +102,7 @@ class WebState(GraphState):
                 "som_path": str(som_path),
                 "label_coordinates": json.dumps(self.label_coordinates),
                 "parsed_content": json.dumps(self.parsed_content),
+                "url": self.url,
             }
         }
         yaml.dump(state_data, state_file, default_flow_style=False)

@@ -11,6 +11,7 @@ from project.checkpoint_config import CheckpointConfig
 from project.metadata import ProjectMetadata
 from web_parser.omni_parser import WebSOM
 
+# global_project_manager = None
 
 class ProjectManager:
 
@@ -38,6 +39,9 @@ class ProjectManager:
         )
 
         self.metadata_file = self.path + '/metadata.yaml'
+
+        # global global_project_manager
+        # global_project_manager = self
 
 
     def save_project(self):
@@ -99,7 +103,8 @@ def new_project(browse_env: PlaywrightBrowserEnv,
         state_info="home page",
         web_image=web_image,
         som=som,
-        browse_env=browse_env
+        browse_env=browse_env,
+        url=metadata.url
     )
 
     fsm_graph = WebGraph(root_state=root_state, browse_env=browse_env)

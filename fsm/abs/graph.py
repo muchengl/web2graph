@@ -53,6 +53,10 @@ class Graph(ABC):
     def insert_node(self):
         pass
 
+    @abstractmethod
+    def move_to_state(self, target_state):
+        pass
+
 
 class FSMGraph(Graph):
     def __init__(self, root_state):

@@ -39,6 +39,8 @@ class MainWindow(QMainWindow):
         self.browser = browser
         self.browser.start_browser_sync()
 
+
+
         self.project_manager: ProjectManager=None
 
 
@@ -365,6 +367,10 @@ class MainWindow(QMainWindow):
 
 
     def save_state(self):
+        if hasattr(self, 'executed_action') is not True:
+            # todo: update node
+            return
+
         action_name = self.action_name_input.text()
         action_info = self.action_info_input.text()
 
@@ -372,10 +378,11 @@ class MainWindow(QMainWindow):
         state_info = self.state_info_input.text()
 
         # Execute the save FSM Graph code with the inputted state name and info
+
         self.project_manager.fsm_graph.insert_node(
             action_name=action_name,
             action_info=action_info,
-            action=self.executed_action,
+            action=self.executed_action if hasattr(self, 'executed_action') else None,
             state_name=state_name,
             state_info=state_info,
             web_image=self.current_web_image,
@@ -397,8 +404,8 @@ class MainWindow(QMainWindow):
         # self.save_button.setVisible(False)
 
         # Clear the form inputs for next use
-        # self.state_name_input.clear()
-        # self.state_info_input.clear()
+        self.state_name_input.clear()
+        self.state_info_input.clear()
 
 
     def _show_state_info(self,

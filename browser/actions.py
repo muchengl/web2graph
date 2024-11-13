@@ -55,7 +55,7 @@ class ClickAction(Action):
 
         logger.info(f"CLICK: {self.action_target_id}")
 
-        width, height = self.web_som.processed_image.size
+        # width, height = self.web_som.processed_image.size
 
 
         position = self.web_som.label_coordinates[str(self.action_target_id)]
