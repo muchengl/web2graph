@@ -4,13 +4,13 @@ from PyQt6.QtWidgets import QApplication, QDialog, QVBoxLayout
 from pyqtgraph.Qt import QtGui
 import networkx as nx
 import numpy as np
-from PyQt6.QtGui import QColor
+from PyQt6.QtGui import QColor, QFont
 
 from fsm.abs import Graph
 
 
 class ComplexGraphWidget(pg.GraphicsLayoutWidget):
-    def __init__(self, graph, web_fsm: Graph):
+    def __init__(self, graph, web_fsm: Graph, k=0.7, iterations=500):
         super().__init__()
         self.plot = self.addPlot()  # Create the plot window
         self.plot.hideAxis('bottom')  # Hide the axes
@@ -19,9 +19,15 @@ class ComplexGraphWidget(pg.GraphicsLayoutWidget):
         self.setBackground('w')
 
         # Generate layout using NetworkX
-        self.pos = nx.spring_layout(graph)  # Position nodes with layout algorithm
+        # self.pos = nx.spring_layout(graph)  # Position nodes with layout algorithm
         self.graph = graph
         self.web_fsm = web_fsm
+
+        self.k = k
+        self.iterations = iterations
+        self.pos = nx.spring_layout(self.graph, k=self.k, iterations=self.iterations)  # 弹性布局
+        # self.pos = nx.shell_layout(self.graph)
+
 
         # Draw nodes and edges initially
         self.draw_graph()
@@ -48,6 +54,11 @@ class ComplexGraphWidget(pg.GraphicsLayoutWidget):
 
         # Add label below the node
         label_item = pg.TextItem(text=label, color='k', anchor=(0.5, 1))
+
+        font = QFont()
+        font.setPointSize(8)  # Set font size (e.g., 8)
+        label_item.setFont(font)
+
         label_item.setPos(pos[0], pos[1] - 0.1)  # Adjust label position below the node
         self.plot.addItem(label_item)
 
@@ -60,6 +71,13 @@ class ComplexGraphWidget(pg.GraphicsLayoutWidget):
         )
         self.plot.addItem(line)
 
+    def update_layout(self, k=None, iterations=None):
+        if k:
+            self.k = k
+        if iterations:
+            self.iterations = iterations
+        self.pos = nx.spring_layout(self.graph, k=self.k, iterations=self.iterations)
+        self.draw_graph()
 
 
     def on_node_click(self, plot, points):
@@ -86,8 +104,12 @@ class VGraph:
                       node1_color: str = 'yellow',
                       node2_color: str = 'green'):
         # Add nodes with attributes
-        self.G.add_node(node1_id, label=node1_label, color=QColor(node1_color).getRgb())
-        self.G.add_node(node2_id, label=node2_label, color=QColor(node2_color).getRgb())
+        # self.G.add_node(node1_id, label=node1_label, color=QColor(node1_color).getRgb())
+        # self.G.add_node(node2_id, label=node2_label, color=QColor(node2_color).getRgb())
+
+        self.G.add_node(node1_id, label=node1_label, color=QColor(node1_color).getRgb()[:3])
+        self.G.add_node(node2_id, label=node2_label, color=QColor(node2_color).getRgb()[:3])
+
         # Add edge between nodes
         self.G.add_edge(node1_id, node2_id)
 
