@@ -14,6 +14,8 @@ class Graph(ABC):
         self.visited = set()
         self.stack = [root_state]
 
+        self.states = {}
+
         # Mark the root state as visited
         if root_state is not None:
             self.visited.add(root_state.id)

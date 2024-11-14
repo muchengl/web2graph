@@ -68,12 +68,12 @@ class WebGraph(FSMGraph):
         for item in path_:
             if isinstance(item, WebAction):
                 print(f"Action: {item.id}")
-
                 item.action.execute(self.browse_env)
 
             elif isinstance(item, WebState):
                 print(f"State: {item.id}")
 
+        self.current_state = path_[len(path_)-1]
 
 
 
@@ -268,6 +268,7 @@ class WebGraph(FSMGraph):
 
     def _load_state(self, state_file_path):
         states: dict[Any, WebState] = {}
+        self.states = states
         with open(state_file_path, "r") as state_file:
 
             state_data = yaml.safe_load(state_file)

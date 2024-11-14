@@ -1,0 +1,657 @@
+0fcd607e-a20b-11ef-9562-7ee5fc72c695:
+  id: 0fcd607e-a20b-11ef-9562-7ee5fc72c695
+  image_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/0fcd607e-a20b-11ef-9562-7ee5fc72c695_1.png
+  info: ''
+  label_coordinates: '{"0": [10.0, 12.0, 172.0, 17.0], "1": [863.0, 10.0, 154.0, 21.0],
+    "2": [29.0, 93.0, 193.0, 21.0], "3": [28.0, 132.0, 188.0, 16.0], "4": [29.0, 167.0,
+    202.0, 18.0], "5": [74.0, 205.00001525878906, 141.0, 21.0], "6": [370.0, 204.00001525878906,
+    108.0, 20.999969482421875], "7": [689.0, 202.00001525878906, 89.0, 24.0], "8":
+    [77.0, 233.0, 92.0, 19.0], "9": [369.0, 231.00001525878906, 149.0, 23.0], "10":
+    [689.0, 229.99998474121094, 180.0, 23.000030517578125], "11": [51.0, 261.0, 20.0,
+    18.0], "12": [77.0, 261.0, 163.0, 20.0], "13": [369.0, 259.0, 137.0, 25.0], "14":
+    [689.0, 259.0, 174.0, 22.0], "15": [75.0, 285.0, 126.0, 26.0], "16": [369.0, 285.0,
+    135.0, 26.0], "17": [689.0, 287.0, 174.0, 25.0], "18": [51.0, 317.0, 20.0, 18.0],
+    "19": [75.0, 315.9999694824219, 116.0, 21.0], "20": [369.0, 314.9999694824219,
+    204.0, 23.0], "21": [690.0, 314.9999694824219, 155.0, 23.0], "22": [50.0, 343.9999694824219,
+    21.0, 19.0], "23": [79.0, 346.0, 124.0, 18.0], "24": [369.0, 342.0, 97.0, 25.0],
+    "25": [689.0, 343.0, 132.0, 24.0], "26": [50.0, 372.0, 21.0, 19.0], "27": [76.0,
+    371.0, 141.0, 24.0], "28": [368.0, 370.0, 110.0, 25.0], "29": [689.0, 370.0, 158.0,
+    23.0], "30": [78.0, 402.0, 67.0, 19.0], "31": [369.0, 396.9999694824219, 144.0,
+    25.0], "32": [689.0, 398.0000305175781, 180.0, 25.0], "33": [75.0, 428.0, 185.0,
+    22.0], "34": [394.0, 425.0000305175781, 47.0, 26.0], "35": [689.0, 427.0, 131.0,
+    24.0], "36": [51.0, 457.0, 20.0, 18.0], "37": [78.0, 457.9999694824219, 98.0,
+    19.0], "38": [369.0, 454.0, 152.0, 25.0], "39": [75.0, 486.0, 92.0, 18.0], "40":
+    [369.0, 481.99993896484375, 144.0, 24.00006103515625], "41": [37.0, 526.0, 92.0,
+    25.0], "42": [52.529258728027344, 289.09112548828125, 15.933494567871094, 16.70281982421875],
+    "43": [52.326622009277344, 233.0319366455078, 15.576492309570312, 15.815032958984375],
+    "44": [52.70466613769531, 400.8839416503906, 15.777313232421875, 16.746337890625],
+    "45": [372.65948486328125, 429.2461853027344, 16.3114013671875, 16.443115234375],
+    "46": [52.58271789550781, 429.1186218261719, 15.979537963867188, 16.87188720703125],
+    "47": [52.43274688720703, 485.1082763671875, 15.814308166503906, 16.07476806640625],
+    "48": [52.67259979248047, 205.41075134277344, 14.930023193359375, 15.775299072265625]}'
+  name: post job categories
+  parsed_content: '["Text Box ID 0: CL) college station > jobs", "Text Box ID 1: [
+    log in ] [ create account ].", "Text Box ID 2: post a job on craigslist.", "Text
+    Box ID 3: college station, TX change", "Text Box ID 4: select categories ($15
+    each)", "Text Box ID 5:  accounting/finance", "Text Box ID 6:   healthcare", "Text
+    Box ID 7:  security", "Text Box ID 8: admin/office", "Text Box ID 9:  human resource.",
+    "Text Box ID 10:  skilled trades/artisan.", "Text Box ID 11: 0", "Text Box ID
+    12: architect/engineer/cad", "Text Box ID 13:  legal/paralegal", "Text Box ID
+    14:  software/qa/dba/etc", "Text Box ID 15:  art/media/design", "Text Box ID 16:  manufacturing",
+    "Text Box ID 17:  systems/networking", "Text Box ID 18: 0", "Text Box ID 19: business/mgmt",
+    "Text Box ID 20:  marketing/advertising/pr", "Text Box ID 21:  technical support",
+    "Text Box ID 22: 0", "Text Box ID 23: customer service", "Text Box ID 24:  nonprofit",
+    "Text Box ID 25:  transportation", "Text Box ID 26: 0", "Text Box ID 27: education/teaching",
+    "Text Box ID 28:  real estate", "Text Box ID 29:  tv/film/video/radio", "Text
+    Box ID 30: et cetera", "Text Box ID 31:  retail/wholesale", "Text Box ID 32:  web/html/info
+    design.", "Text Box ID 33:  food/beverage/hospitality", "Text Box ID 34:  sales",
+    "Text Box ID 35:  writing/editing", "Text Box ID 36: 0", "Text Box ID 37: general
+    labor", "Text Box ID 38:  salon/spa/fitness", "Text Box ID 39: government", "Text
+    Box ID 40:  science/biotech", "Text Box ID 41: continue", "Icon Box ID 42: a square
+    or rectangular shape.", "Icon Box ID 43: a text input field.", "Icon Box ID 44:
+    a user interface element with a square or rectangular shape.", "Icon Box ID 45:
+    a square or rectangular shape.", "Icon Box ID 46: a square or rectangular shape.",
+    "Icon Box ID 47: a square or rectangular shape.", "Icon Box ID 48: a square or
+    rectangular shape."]'
+  som_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/0fcd607e-a20b-11ef-9562-7ee5fc72c695_2.png
+  url: ''
+  uuid: 0fcd607e-a20b-11ef-9562-7ee5fc72c695
+309cec8c-a212-11ef-bf60-7ee5fc72c695:
+  id: 309cec8c-a212-11ef-bf60-7ee5fc72c695
+  image_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/309cec8c-a212-11ef-bf60-7ee5fc72c695_1.png
+  info: ''
+  label_coordinates: '{"0": [10.0, 12.0, 172.0, 17.0], "1": [863.0, 10.0, 154.0, 21.0],
+    "2": [29.0, 93.0, 193.0, 21.0], "3": [28.0, 132.0, 188.0, 16.0], "4": [29.0, 166.0,
+    147.0, 21.0], "5": [49.0, 202.00001525878906, 166.0, 24.0], "6": [370.0, 204.00001525878906,
+    108.0, 20.999969482421875], "7": [691.0, 202.00001525878906, 87.0, 24.0], "8":
+    [75.0, 233.0, 94.0, 19.0], "9": [369.0, 231.00001525878906, 149.0, 23.0], "10":
+    [690.0, 229.99998474121094, 179.0, 23.000030517578125], "11": [51.0, 261.0, 20.0,
+    18.0], "12": [77.0, 261.0, 163.0, 20.0], "13": [369.0, 259.0, 137.0, 25.0], "14":
+    [689.0, 259.0, 174.0, 22.0], "15": [50.0, 289.0, 21.0, 19.0], "16": [75.0, 285.0,
+    126.0, 26.0], "17": [369.0, 285.0, 135.0, 26.0], "18": [689.0, 287.0, 174.0, 25.0],
+    "19": [51.0, 317.0, 20.0, 18.0], "20": [75.0, 315.9999694824219, 116.0, 21.0],
+    "21": [369.0, 314.9999694824219, 204.0, 23.0], "22": [690.0, 314.9999694824219,
+    155.0, 23.0], "23": [50.0, 343.9999694824219, 21.0, 19.0], "24": [79.0, 346.0,
+    124.0, 18.0], "25": [369.0, 342.0, 97.0, 25.0], "26": [689.0, 343.0, 132.0, 24.0],
+    "27": [50.0, 372.0, 21.0, 19.0], "28": [76.0, 371.0, 141.0, 24.0], "29": [368.0,
+    370.0, 110.0, 25.0], "30": [689.0, 370.0, 158.0, 23.0], "31": [51.0, 400.9999694824219,
+    20.0, 19.00006103515625], "32": [78.0, 402.0, 67.0, 19.0], "33": [369.0, 396.9999694824219,
+    144.0, 25.0], "34": [689.0, 398.0000305175781, 180.0, 25.0], "35": [51.0, 429.0000305175781,
+    22.0, 18.0], "36": [75.0, 428.0, 185.0, 22.0], "37": [394.0, 425.0000305175781,
+    47.0, 26.0], "38": [689.0, 427.0, 131.0, 24.0], "39": [51.0, 457.0, 20.0, 18.0],
+    "40": [78.0, 457.9999694824219, 98.0, 19.0], "41": [369.0, 454.0, 152.0, 25.0],
+    "42": [75.0, 486.0, 92.0, 18.0], "43": [369.0, 481.99993896484375, 144.0, 24.00006103515625],
+    "44": [37.0, 526.0, 92.0, 25.0], "45": [52.24369812011719, 232.95843505859375,
+    15.844696044921875, 15.98272705078125], "46": [372.6412048339844, 429.2213439941406,
+    16.357421875, 16.4759521484375], "47": [52.38435363769531, 485.06915283203125,
+    15.89862060546875, 16.16278076171875]}'
+  name: security selected
+  parsed_content: '["Text Box ID 0: CL) college station > jobs", "Text Box ID 1: [
+    log in ] [ create account ]", "Text Box ID 2: post a job on craigslist.", "Text
+    Box ID 3: college station, TX change", "Text Box ID 4: 1 category, $15 total",
+    "Text Box ID 5:  accounting/finance", "Text Box ID 6:   healthcare", "Text Box
+    ID 7:  security", "Text Box ID 8: admin/office", "Text Box ID 9:  human resource.",
+    "Text Box ID 10:  skilled trades/artisan.", "Text Box ID 11: 0", "Text Box ID
+    12: architect/engineer/cad", "Text Box ID 13:  legal/paralegal", "Text Box ID
+    14:  software/qa/dba/etc", "Text Box ID 15: 0", "Text Box ID 16:  art/media/design",
+    "Text Box ID 17:  manufacturing", "Text Box ID 18:  systems/networking", "Text
+    Box ID 19: 0", "Text Box ID 20:  business/mgmt", "Text Box ID 21:  marketing/advertising/pr",
+    "Text Box ID 22:  technical support", "Text Box ID 23: 0", "Text Box ID 24: customer
+    service", "Text Box ID 25:  nonprofit", "Text Box ID 26:  transportation", "Text
+    Box ID 27: 0", "Text Box ID 28: education/teaching", "Text Box ID 29:  real estate",
+    "Text Box ID 30:  tv/film/video/radio", "Text Box ID 31: 0", "Text Box ID 32:
+    et cetera", "Text Box ID 33:  retail/wholesale", "Text Box ID 34:  web/html/info
+    design", "Text Box ID 35: 0", "Text Box ID 36:  food/beverage/hospitality", "Text
+    Box ID 37:  sales", "Text Box ID 38:  writing/editing", "Text Box ID 39: 0", "Text
+    Box ID 40: general labor", "Text Box ID 41:  salon/spa/fitness", "Text Box ID
+    42: government", "Text Box ID 43:  science/biotech", "Text Box ID 44: continue",
+    "Icon Box ID 45: a user interface element with a square or rectangular shape.",
+    "Icon Box ID 46: a square or rectangular shape.", "Icon Box ID 47: a square or
+    rectangular shape."]'
+  som_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/309cec8c-a212-11ef-bf60-7ee5fc72c695_2.png
+  url: ''
+  uuid: 309cec8c-a212-11ef-bf60-7ee5fc72c695
+56da5aba-a212-11ef-bf60-7ee5fc72c695:
+  id: 56da5aba-a212-11ef-bf60-7ee5fc72c695
+  image_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/56da5aba-a212-11ef-bf60-7ee5fc72c695_1.png
+  info: ''
+  label_coordinates: '{"0": [5.0, 8.0, 250.0, 24.0], "1": [863.0, 12.0, 154.0, 19.0],
+    "2": [28.0, 93.0, 80.0, 18.0], "3": [455.0, 93.00000762939453, 134.0, 16.999984741210938],
+    "4": [880.0, 91.00001525878906, 60.0, 18.999984741210938], "5": [28.0, 162.0,
+    284.0, 19.0], "6": [28.0, 184.0, 76.0, 19.0], "7": [40.0, 441.0, 108.0, 19.0],
+    "8": [47.0, 469.0, 113.0, 17.0], "9": [528.0, 466.0, 249.0, 19.0], "10": [525.0,
+    486.0, 98.0, 23.0], "11": [47.0, 516.0, 106.0, 18.0], "12": [527.0, 510.0, 184.0,
+    19.0], "13": [528.0, 533.0, 241.0, 19.0], "14": [528.0, 555.0, 149.0, 18.0], "15":
+    [29.0, 632.0, 51.0, 19.0], "16": [28.0, 678.0, 92.0, 19.0], "17": [28.0, 696.0,
+    485.0, 22.0], "18": [28.0, 724.0, 101.0, 19.0], "19": [43.0, 781.0, 85.0, 19.0],
+    "20": [47.0, 807.0000610351562, 40.0, 19.0], "21": [336.0, 811.0, 80.0, 20.0],
+    "22": [51.0, 827.0, 153.0, 19.0], "23": [341.0, 845.0, 198.0, 18.0], "24": [552.0,
+    842.0, 144.0, 21.0], "25": [688.0, 843.0, 132.0, 19.0], "26": [47.0, 857.9999389648438,
+    161.0, 23.0], "27": [48.0, 878.0, 232.0, 19.0], "28": [343.0, 878.0, 93.0, 15.0],
+    "29": [576.0, 878.0, 64.0, 15.0], "30": [688.0, 878.0, 85.0, 15.0], "31": [47.0,
+    901.9999389648438, 222.0, 19.0], "32": [47.0, 926.0, 184.0, 19.0], "33": [44.0,
+    998.0, 87.0, 18.0], "34": [45.0, 1020.0, 124.0, 19.0], "35": [48.0, 1046.0, 40.0,
+    15.0], "36": [281.0, 1046.0, 76.0, 15.0], "37": [513.0, 1046.0, 26.0, 16.0], "38":
+    [28.0, 1127.0, 465.0, 18.0], "39": [895.0, 1162.0, 96.0, 32.0], "40": [46.6102294921875,
+    1059.84423828125, 218.05902099609375, 25.801025390625], "41": [880.4266357421875,
+    108.08847045898438, 111.37890625, 24.251113891601562], "42": [280.151611328125,
+    1059.7342529296875, 216.82177734375, 25.948486328125], "43": [37.430633544921875,
+    204.00308227539062, 952.6085205078125, 212.720458984375], "44": [314.0748596191406,
+    932.7459716796875, 699.11083984375, 27.01708984375], "45": [343.7103576660156,
+    893.031982421875, 109.87457275390625, 21.534423828125]}'
+  name: job offer form
+  parsed_content: '["Text Box ID 0: CL college station > jobs > security", "Text Box
+    ID 1: [ log in ] [ create account ]", "Text Box ID 2: posting title", "Text Box
+    ID 3: city or neighborhood", "Text Box ID 4: ZIP code", "Text Box ID 5: Only one
+    job description per posting please.", "Text Box ID 6: description", "Text Box
+    ID 7:  posting details", "Text Box ID 8: employment type", "Text Box ID 9:  direct
+    contact by recruiters is ok", "Text Box ID 10:  internship", "Text Box ID 11:
+    experience level", "Text Box ID 12:  non-profit organization", "Text Box ID 13:  relocation
+    assistance available", "Text Box ID 14:  telecommuting ok", "Text Box ID 15: job
+    title", "Text Box ID 16: compensation", "Text Box ID 17: describe compensation
+    here (please be as detailed as possible)", "Text Box ID 18: company name", "Text
+    Box ID 19: contact info", "Text Box ID 20: email", "Text Box ID 21: phone/text",
+    "Text Box ID 22: Your email address", "Text Box ID 23:  show my phone number",
+    "Text Box ID 24:  phone calls OK", "Text Box ID 25:  text/sms OK", "Text Box ID
+    26: email privacy options [?]", "Text Box ID 27: O CL mail relay (recommended)",
+    "Text Box ID 28: phone number", "Text Box ID 29: extension", "Text Box ID 30:
+    contact name", "Text Box ID 31: O show my real email address", "Text Box ID 32:
+    O no replies to this email", "Text Box ID 33: location info", "Text Box ID 34:  show
+    address", "Text Box ID 35: street", "Text Box ID 36: cross street", "Text Box
+    ID 37: city", "Text Box ID 38:  ok to highlight this job opening for persons with
+    disabilities [?]", "Text Box ID 39: continue", "Icon Box ID 40: a blank or empty
+    space.", "Icon Box ID 41: a white background with a green border.", "Icon Box
+    ID 42: a blank or empty space.", "Icon Box ID 43: an airplane flying over a city.",
+    "Icon Box ID 44: a white background with a black border.", "Icon Box ID 45: a
+    blank space or a placeholder for an image."]'
+  som_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/56da5aba-a212-11ef-bf60-7ee5fc72c695_2.png
+  url: ''
+  uuid: 56da5aba-a212-11ef-bf60-7ee5fc72c695
+7fda7692-a209-11ef-8a94-7ee5fc72c695:
+  id: 7fda7692-a209-11ef-8a94-7ee5fc72c695
+  image_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/7fda7692-a209-11ef-8a94-7ee5fc72c695_1.png
+  info: home page
+  label_coordinates: '{"0": [41.0, 25.0, 151.0, 27.0], "1": [253.0, 27.0, 166.0, 23.0],
+    "2": [744.0, 40.999996185302734, 32.0, 14.0], "3": [803.0, 41.0, 28.0, 16.0],
+    "4": [883.0, 32.0, 50.0, 16.0], "5": [951.0, 34.0, 12.0, 11.0], "6": [73.0, 71.0,
+    101.0, 23.0], "7": [897.0, 63.99999237060547, 54.0, 15.0], "8": [295.0, 85.0,
+    90.0, 20.0], "9": [543.0, 82.0, 67.0, 23.0], "10": [763.0, 84.0, 37.0, 21.0],
+    "11": [905.0, 89.0, 40.0, 14.0], "12": [238.0, 111.0, 55.0, 15.0], "13": [321.0,
+    109.0, 68.0, 18.000015258789062], "14": [462.0, 108.0, 88.0, 20.0], "15": [713.0,
+    111.0, 117.0, 15.0], "16": [907.0, 105.0, 35.0, 15.0], "17": [31.0, 124.0, 140.0,
+    18.0], "18": [238.0, 129.00001525878906, 40.0, 16.0], "19": [322.0, 127.0, 47.0,
+    16.0], "20": [463.0, 128.0, 85.0, 18.0], "21": [711.0, 128.0, 85.0, 18.0], "22":
+    [892.0, 120.99999237060547, 65.0, 15.000007629394531], "23": [237.0, 146.0, 60.0,
+    18.0], "24": [322.0, 145.00001525878906, 75.0, 15.0], "25": [462.0, 146.0, 99.0,
+    18.0], "26": [711.0, 146.0, 111.0, 18.0], "27": [897.0, 138.99998474121094, 54.0,
+    11.0], "28": [894.0, 153.0, 60.0, 15.0], "29": [239.0, 165.00001525878906, 48.0,
+    16.0], "30": [322.0, 163.00001525878906, 64.0, 15.0], "31": [464.0, 165.0, 113.0,
+    15.0], "32": [711.0, 163.00001525878906, 119.0, 20.0], "33": [898.0, 168.99998474121094,
+    51.0, 15.0], "34": [238.0, 185.0, 44.0, 16.0], "35": [320.0, 181.0, 32.0, 14.0],
+    "36": [463.0, 184.0, 103.0, 18.0], "37": [713.0, 185.0, 102.0, 15.0], "38": [889.0,
+    185.0, 71.0, 15.0], "39": [74.0, 200.0, 95.0, 14.0], "40": [238.0, 204.0, 48.0,
+    13.0], "41": [322.0, 200.0, 45.0, 16.0], "42": [464.0, 203.0, 112.0, 15.0], "43":
+    [713.0, 203.0, 100.0, 15.0], "44": [907.0, 201.0, 35.0, 15.0], "45": [46.0, 217.00001525878906,
+    86.0, 15.0], "46": [158.0, 217.99998474121094, 15.0, 12.0], "47": [178.0, 218.0,
+    18.0, 14.0], "48": [239.0, 222.99998474121094, 45.0, 15.0], "49": [322.0, 218.0,
+    84.0, 15.0], "50": [464.0, 222.00001525878906, 92.0, 15.0], "51": [713.0, 223.0,
+    103.0, 14.0], "52": [892.0, 217.00001525878906, 66.0, 15.0], "53": [46.0, 235.00001525878906,
+    150.0, 15.0], "54": [239.0, 240.00003051757812, 66.0, 14.999969482421875], "55":
+    [321.0, 236.99998474121094, 60.0, 15.0], "56": [464.0, 240.00003051757812, 87.0,
+    14.999969482421875], "57": [713.0, 240.00003051757812, 61.0, 14.999969482421875],
+    "58": [907.0, 233.0, 35.0, 15.0], "59": [48.0, 255.99998474121094, 41.0, 12.000015258789062],
+    "60": [111.0, 255.99998474121094, 44.0, 12.000015258789062], "61": [153.0, 254.0,
+    43.0, 16.0], "62": [322.0, 255.0, 66.0, 15.0], "63": [463.0, 257.0, 117.0, 18.0],
+    "64": [711.0, 257.0, 62.0, 18.0], "65": [905.0, 248.99998474121094, 39.0, 14.999984741210938],
+    "66": [133.0, 274.0, 44.0, 15.0], "67": [172.0, 275.0, 23.0, 13.0], "68": [711.0,
+    273.0, 104.0, 21.0], "69": [898.0, 266.0, 52.0, 15.0], "70": [48.0, 276.0, 41.0,
+    12.0], "71": [91.0, 277.0, 18.0, 9.0], "72": [464.0, 277.0, 96.0, 15.0], "73":
+    [900.0, 281.0, 47.0, 15.0], "74": [139.0, 297.0, 8.0, 9.0], "75": [158.0, 297.0,
+    12.0, 9.0], "76": [306.0, 291.0, 68.0, 18.0], "77": [710.0, 295.0, 85.0, 15.0],
+    "78": [887.0, 297.0, 74.0, 15.0], "79": [239.0, 316.0, 68.0, 15.0], "80": [335.0,
+    316.0, 70.0, 15.0], "81": [546.0, 313.0, 62.0, 19.0], "82": [711.0, 315.0, 76.0,
+    13.0], "83": [900.0, 313.0, 48.0, 15.0], "84": [237.0, 331.0, 45.0, 23.0], "85":
+    [335.0, 335.0, 35.0, 18.0], "86": [573.0, 337.0, 82.0, 18.0], "87": [713.0, 332.0,
+    105.0, 15.0], "88": [892.0, 329.0, 65.0, 15.0], "89": [464.0, 338.9999694824219,
+    53.0, 15.0], "90": [237.0, 352.0, 69.0, 18.0], "91": [336.0, 354.0, 50.0, 15.0],
+    "92": [713.0, 351.0, 98.0, 15.0], "93": [907.0, 345.0, 35.0, 15.0], "94": [462.0,
+    356.0, 69.0, 18.0], "95": [573.0, 357.0, 29.0, 16.0], "96": [713.0, 369.0, 86.0,
+    15.0], "97": [905.0, 361.0, 39.0, 15.0], "98": [54.0, 371.0, 134.0, 15.0], "99":
+    [238.0, 373.0, 60.0, 15.0], "100": [335.0, 372.0, 47.0, 16.0], "101": [462.0,
+    375.0, 69.0, 15.0], "102": [572.0, 375.0000305175781, 54.0, 14.0], "103": [711.0,
+    386.0, 114.0, 18.0], "104": [902.0, 377.0, 44.0, 15.0], "105": [60.0, 394.0, 125.0,
+    15.0], "106": [238.0, 391.0, 51.0, 16.0], "107": [335.0, 391.0, 24.0, 17.0], "108":
+    [463.0, 394.0, 69.0, 18.0], "109": [572.0, 395.0, 76.0, 16.0], "110": [903.0,
+    395.0, 41.0, 12.0], "111": [236.0, 411.0, 38.0, 13.0], "112": [335.0, 409.0, 67.0,
+    15.0], "113": [463.0, 412.0, 64.0, 18.0], "114": [571.0, 412.0, 52.0, 15.0], "115":
+    [713.0, 405.0, 96.0, 15.0], "116": [63.0, 417.0000305175781, 117.0, 15.0], "117":
+    [893.0, 409.0, 61.0, 15.0], "118": [238.0, 428.0000305175781, 38.0, 16.0], "119":
+    [336.0, 426.0, 76.0, 18.0], "120": [464.0, 431.0, 49.0, 15.0], "121": [574.0,
+    431.0, 76.0, 15.0], "122": [709.0, 424.0, 100.0, 15.0], "123": [893.0, 425.0,
+    63.0, 15.0], "124": [239.0, 446.0, 79.0, 15.0], "125": [336.0, 446.0, 67.0, 15.0],
+    "126": [462.0, 448.0, 60.0, 18.0], "127": [574.0, 449.0, 66.0, 15.0], "128": [713.0,
+    443.0, 65.0, 15.0], "129": [892.0, 441.0, 64.0, 15.0], "130": [238.0, 463.9999694824219,
+    54.0, 17.0], "131": [335.0, 463.0, 64.0, 18.0], "132": [463.0, 467.0, 39.0, 16.0],
+    "133": [571.0, 467.0, 49.0, 16.0], "134": [711.0, 461.0, 103.0, 15.0], "135":
+    [896.0, 459.0, 57.0, 12.0], "136": [238.0, 482.0000305175781, 67.0, 14.99993896484375],
+    "137": [711.0, 477.9999694824219, 90.0, 18.0], "138": [887.0, 473.0000305175781,
+    74.0, 15.0], "139": [76.0, 493.0000305175781, 93.0, 15.0], "140": [337.0, 483.9999694824219,
+    75.0, 12.0], "141": [463.0, 487.0, 72.0, 14.0], "142": [573.0, 486.0000305175781,
+    60.0, 15.0], "143": [710.0, 496.0, 120.0, 17.0], "144": [897.0, 489.0000305175781,
+    56.0, 15.0], "145": [238.0, 500.9999694824219, 66.0, 15.000030517578125], "146":
+    [462.0, 503.99993896484375, 64.0, 18.0], "147": [70.0, 514.0, 103.0, 18.0], "148":
+    [572.0, 505.0, 104.0, 16.0], "149": [902.0, 505.0000305175781, 44.0, 14.999969482421875],
+    "150": [463.0, 520.0, 34.0, 20.0], "151": [573.0, 523.0000610351562, 77.0, 18.0],
+    "152": [713.0, 516.9999389648438, 49.0, 15.0], "153": [903.0, 521.0, 42.0, 15.0],
+    "154": [67.0, 538.0, 107.0, 18.0], "155": [268.0, 536.0, 145.0, 20.0], "156":
+    [462.0, 541.0, 66.0, 18.0], "157": [574.0, 542.0000610351562, 67.0, 15.0], "158":
+    [713.0, 535.0, 112.0, 14.0], "159": [909.0, 537.0, 32.0, 15.0], "160": [86.0,
+    562.0000610351562, 70.0, 15.0], "161": [309.0, 562.0, 34.0, 16.0], "162": [382.0,
+    562.0, 33.0, 16.0], "163": [463.0, 559.0, 37.0, 16.0], "164": [575.0, 560.0, 76.0,
+    15.0], "165": [713.0, 554.0, 113.0, 15.0], "166": [893.0, 552.9999389648438, 63.0,
+    15.0], "167": [235.0, 564.0, 35.0, 12.0], "168": [237.0, 579.0000610351562, 24.0,
+    16.0], "169": [309.0, 580.0, 41.0, 15.0], "170": [382.0, 579.0000610351562, 33.0,
+    16.0], "171": [463.0, 578.0, 40.0, 16.0], "172": [573.0, 578.0000610351562, 64.0,
+    18.0], "173": [710.0, 571.0, 114.0, 16.0], "174": [898.0, 575.0, 52.0, 14.0],
+    "175": [79.0, 586.0, 85.0, 15.0], "176": [237.0, 595.0, 38.0, 15.0], "177": [309.0,
+    596.0, 40.0, 13.0], "178": [382.0, 595.0, 38.0, 16.0], "179": [463.0, 598.0, 58.0,
+    14.0], "180": [574.0, 598.0, 51.0, 16.0], "181": [713.0, 591.0000610351562, 104.0,
+    15.0], "182": [710.0, 607.0, 60.0, 18.0], "183": [898.0, 599.0, 52.0, 11.0], "184":
+    [237.0, 609.9999389648438, 32.0, 19.0], "185": [309.0, 611.9999389648438, 32.0,
+    15.0], "186": [380.0, 614.0, 36.0, 13.0], "187": [463.0, 616.0, 72.0, 15.0], "188":
+    [573.0, 616.0, 44.0, 16.0], "189": [237.0, 626.0, 37.0, 19.0], "190": [309.0,
+    628.0, 27.0, 16.0], "191": [382.0, 627.9999389648438, 40.0, 15.0], "192": [711.0,
+    626.0, 89.0, 15.0], "193": [902.0, 620.0, 43.0, 15.0], "194": [463.0, 634.0000610351562,
+    75.0, 15.0], "195": [573.0, 633.0, 35.0, 18.0], "196": [237.0, 646.0, 32.0, 14.0],
+    "197": [309.0, 646.0, 38.0, 14.0], "198": [382.0, 646.0, 40.0, 14.0], "199": [711.0,
+    642.0, 106.0, 21.0], "200": [889.0, 640.9999389648438, 72.0, 15.0], "201": [309.0,
+    660.0, 43.0, 19.0], "202": [463.0, 653.0, 72.0, 15.0], "203": [572.0, 651.0, 78.0,
+    20.0], "204": [64.0, 662.0000610351562, 115.0, 14.0], "205": [237.0, 663.0000610351562,
+    37.0, 15.0], "206": [382.0, 663.9999389648438, 23.0, 12.0], "207": [463.0, 671.0,
+    75.0, 15.0], "208": [574.0, 671.0, 45.0, 15.0], "209": [710.0, 663.0, 95.0, 18.0],
+    "210": [237.0, 680.0, 33.0, 15.0], "211": [309.0, 679.0, 27.0, 16.0], "212": [383.0,
+    681.0, 40.0, 11.0], "213": [462.0, 688.0, 71.0, 18.0], "214": [572.0, 686.0, 85.0,
+    22.0], "215": [238.0, 698.0, 41.0, 12.0], "216": [309.0, 696.0, 31.0, 16.0], "217":
+    [382.0, 696.0, 29.0, 16.0], "218": [463.0, 708.0, 92.0, 15.0], "219": [573.0,
+    707.0, 48.0, 16.0], "220": [763.0, 701.0, 37.0, 19.0], "221": [238.0, 714.0, 22.0,
+    13.0], "222": [309.0, 713.0, 29.0, 16.0], "223": [380.0, 714.0, 36.0, 13.0], "224":
+    [238.0, 729.0000610351562, 40.0, 15.0], "225": [310.0, 731.0, 46.0, 12.0], "226":
+    [382.0, 729.0, 33.0, 16.0], "227": [463.0, 727.0, 67.0, 15.0], "228": [573.0,
+    726.0, 79.0, 14.0], "229": [713.0, 727.0, 58.0, 15.0], "230": [789.0, 726.0, 39.0,
+    16.0], "231": [77.0, 744.0, 89.0, 15.0], "232": [238.0, 746.0000610351562, 31.0,
+    16.0], "233": [309.0, 745.9999389648438, 48.0, 15.0], "234": [381.0, 747.0000610351562,
+    20.0, 14.0], "235": [464.0, 745.0000610351562, 66.0, 15.0], "236": [711.0, 745.0,
+    53.0, 16.0], "237": [789.0, 745.0, 36.0, 16.0], "238": [77.0, 758.0000610351562,
+    88.0, 18.0], "239": [238.0, 763.0, 22.0, 15.0], "240": [309.0, 763.0, 38.0, 15.0],
+    "241": [381.0, 761.0, 33.0, 16.0], "242": [711.0, 763.0, 34.0, 16.0], "243": [789.0,
+    763.0, 39.0, 15.0], "244": [237.0, 778.0, 38.0, 16.0], "245": [309.0, 778.9999389648438,
+    34.0, 15.0], "246": [381.0, 779.0, 15.0, 14.0], "247": [713.0, 781.9999389648438,
+    57.0, 15.0], "248": [789.0, 782.0000610351562, 43.0, 16.0], "249": [238.0, 796.0,
+    22.0, 15.0], "250": [310.0, 797.0, 28.0, 13.0], "251": [382.0, 796.0, 35.0, 15.0],
+    "252": [238.0, 812.0, 22.0, 15.0], "253": [309.0, 812.0, 38.0, 15.0], "254": [382.0,
+    812.0, 35.0, 15.0], "255": [237.0, 828.0, 28.0, 16.0], "256": [747.0, 819.0, 68.0,
+    15.0], "257": [309.0, 829.0, 27.0, 16.0], "258": [382.0, 829.0, 37.0, 15.0], "259":
+    [305.0, 934.0, 366.0, 18.0], "260": [665.0, 935.9999389648438, 54.0, 15.0], "261":
+    [178.2272186279297, 293.82818603515625, 17.567047119140625, 17.28350830078125],
+    "262": [67.2745361328125, 294.07672119140625, 16.899581909179688, 16.5391845703125],
+    "263": [113.85255432128906, 293.49151611328125, 16.480972290039062, 17.84942626953125],
+    "264": [91.47462463378906, 293.56689453125, 15.4456787109375, 17.14678955078125],
+    "265": [46.250648498535156, 293.023681640625, 15.942214965820312, 17.89227294921875]}'
+  name: root
+  parsed_content: '["Text Box ID 0:  craigslist", "Text Box ID 1: o college station",
+    "Text Box ID 2: post", "Text Box ID 3: acct", "Text Box ID 4: english", "Text
+    Box ID 5: V", "Text Box ID 6:  post an ad", "Text Box ID 7: nearby cl", "Text
+    Box ID 8: community", "Text Box ID 9: housing", "Text Box ID 10: jobs", "Text
+    Box ID 11: abilene", "Text Box ID 12: activities", "Text Box ID 13: lost+found",
+    "Text Box ID 14: apts / housing", "Text Box ID 15: accounting+finance", "Text
+    Box ID 16: austin", "Text Box ID 17: Q search craigslist", "Text Box ID 18: artists",
+    "Text Box ID 19: missed", "Text Box ID 20: housing swap", "Text Box ID 21: admin
+    / office", "Text Box ID 22: baton rouge", "Text Box ID 23: childcare", "Text Box
+    ID 24: connections", "Text Box ID 25: housing wanted", "Text Box ID 26: arch /
+    engineering", "Text Box ID 27: beaumont", "Text Box ID 28: brownsville", "Text
+    Box ID 29: classes", "Text Box ID 30: musicians", "Text Box ID 31: office / commercial",
+    "Text Box ID 32:  art / media / design", "Text Box ID 33: central la", "Text Box
+    ID 34: events", "Text Box ID 35: pets", "Text Box ID 36: parking / storage", "Text
+    Box ID 37: biotech / science", "Text Box ID 38: corpus christi", "Text Box ID
+    39: event calendar", "Text Box ID 40: general", "Text Box ID 41: politics", "Text
+    Box ID 42: real estate for sale", "Text Box ID 43: business / mgmt", "Text Box
+    ID 44: dallas", "Text Box ID 45: S M T W", "Text Box ID 46: F", "Text Box ID 47:
+    S", "Text Box ID 48: groups", "Text Box ID 49: rants & raves", "Text Box ID 50:
+    rooms / shared", "Text Box ID 51: customer service", "Text Box ID 52: deep east
+    tx", "Text Box ID 53: 1011 1213141516", "Text Box ID 54: local news", "Text Box
+    ID 55: rideshare", "Text Box ID 56: rooms wanted", "Text Box ID 57: education",
+    "Text Box ID 58: del rio", "Text Box ID 59: 1718", "Text Box ID 60: 2021", "Text
+    Box ID 61: 2223", "Text Box ID 62: volunteers", "Text Box ID 63: sublets / temporary",
+    "Text Box ID 64: etc / misc", "Text Box ID 65: east tx", "Text Box ID 66: 2829",
+    "Text Box ID 67: 30", "Text Box ID 68: food / bev / hosp", "Text Box ID 69: galveston",
+    "Text Box ID 70: 2425", "Text Box ID 71: 26", "Text Box ID 72: vacation rentals",
+    "Text Box ID 73: houston", "Text Box ID 74: 5", "Text Box ID 75: 6", "Text Box
+    ID 76: services", "Text Box ID 77: general labor", "Text Box ID 78: killeen-temple",
+    "Text Box ID 79: automotive", "Text Box ID 80: labor/move", "Text Box ID 81: for
+    sale", "Text Box ID 82: government", "Text Box ID 83: lafayette", "Text Box ID
+    84: beauty", "Text Box ID 85: legal", "Text Box ID 86: farm+garden", "Text Box
+    ID 87: human resources", "Text Box ID 88: lake charles", "Text Box ID 89: antiques",
+    "Text Box ID 90: cell/mobile", "Text Box ID 91: lessons", "Text Box ID 92: legal
+    / paralegal", "Text Box ID 93: laredo", "Text Box ID 94: appliances", "Text Box
+    ID 95: free", "Text Box ID 96: manufacturing", "Text Box ID 97: lawton", "Text
+    Box ID 98: help, faq, abuse, legal", "Text Box ID 99: computer", "Text Box ID
+    100: marine", "Text Box ID 101: arts+crafts", "Text Box ID 102: furniture", "Text
+    Box ID 103: marketing / pr / ad", "Text Box ID 104: mcallen", "Text Box ID 105:
+    avoid scams & fraud", "Text Box ID 106: creative", "Text Box ID 107: pet", "Text
+    Box ID 108: atv/utv/sno", "Text Box ID 109: garage sale", "Text Box ID 110: monroe",
+    "Text Box ID 111: cycle", "Text Box ID 112: real estate", "Text Box ID 113: auto
+    parts", "Text Box ID 114: general", "Text Box ID 115: medical / health", "Text
+    Box ID 116: personal safety tips", "Text Box ID 117:  san angelo", "Text Box ID
+    118: event", "Text Box ID 119: skilled trade", "Text Box ID 120: aviation", "Text
+    Box ID 121: heavy equip", "Text Box ID 122: nonprofit sector", "Text Box ID 123:
+    san antonio", "Text Box ID 124: farm+garden", "Text Box ID 125: sm biz ads", "Text
+    Box ID 126: baby+kid", "Text Box ID 127: household", "Text Box ID 128: real estate",
+    "Text Box ID 129: san marcos", "Text Box ID 130: tinancial", "Text Box ID 131:
+    travel/vac", "Text Box ID 132: barter", "Text Box ID 133: jewelry", "Text Box
+    ID 134: retail / wholesale", "Text Box ID 135: shreveport", "Text Box ID 136:
+    health/well", "Text Box ID 137: sales / biz dev", "Text Box ID 138: southwest
+    ms", "Text Box ID 139: about craigslist", "Text Box ID 140: write/ed/tran", "Text
+    Box ID 141: beauty+hlth", "Text Box ID 142: materials", "Text Box ID 143: salon
+    / spa / fitness", "Text Box ID 144: texarkana", "Text Box ID 145: household",
+    "Text Box ID 146: bike parts", "Text Box ID 147: best-of-craigslist", "Text Box
+    ID 148:  motorcycle parts", "Text Box ID 149: texoma", "Text Box ID 150: bikes",
+    "Text Box ID 151: motorcycles", "Text Box ID 152: security", "Text Box ID 153:
+    victoria", "Text Box ID 154: craigslist is hiring", "Text Box ID 155: discussion
+    forums", "Text Box ID 156: boat parts", "Text Box ID 157: music instr", "Text
+    Box ID 158: skilled trade / craft", "Text Box ID 159: waco", "Text Box ID 160:
+    what''s new", "Text Box ID 161: frugal", "Text Box ID 162: philos", "Text Box
+    ID 163: boats", "Text Box ID 164: photo+video", "Text Box ID 165: software / qa
+    / dba", "Text Box ID 166: wichita falls", "Text Box ID 167: apple", "Text Box
+    ID 168: arts", "Text Box ID 169: gaming", "Text Box ID 170: photo", "Text Box
+    ID 171: books", "Text Box ID 172: rvs+camp", "Text Box ID 173: systems / network",
+    "Text Box ID 174: us cities", "Text Box ID 175: system status", "Text Box ID 176:
+    atheist", "Text Box ID 177: garden", "Text Box ID 178: politics", "Text Box ID
+    179: business", "Text Box ID 180: sporting", "Text Box ID 181: technical support",
+    "Text Box ID 182: transport", "Text Box ID 183: us states", "Text Box ID 184:
+    autos", "Text Box ID 185: haiku", "Text Box ID 186: psych", "Text Box ID 187:
+    cars+trucks", "Text Box ID 188: tickets", "Text Box ID 189: beauty", "Text Box
+    ID 190: help", "Text Box ID 191: recover", "Text Box ID 192: tv / film / video",
+    "Text Box ID 193: canada", "Text Box ID 194: cds/dvd/vhs", "Text Box ID 195: tools",
+    "Text Box ID 196: bikes", "Text Box ID 197: history", "Text Box ID 198: religion",
+    "Text Box ID 199: web / info design", "Text Box ID 200: cl worldwide", "Text Box
+    ID 201: housing", "Text Box ID 202: cell phones", "Text Box ID 203: toys+games",
+    "Text Box ID 204: craigslist charitable", "Text Box ID 205: celebs", "Text Box
+    ID 206: rofo", "Text Box ID 207: clothes+acc", "Text Box ID 208: trailers", "Text
+    Box ID 209: writing / editing", "Text Box ID 210: comp", "Text Box ID 211: jobs",
+    "Text Box ID 212: science", "Text Box ID 213: collectibles", "Text Box ID 214:
+    video gaming", "Text Box ID 215: cosmos", "Text Box ID 216: jokes", "Text Box
+    ID 217: spirit", "Text Box ID 218: computer parts", "Text Box ID 219: wanted",
+    "Text Box ID 220: gigs", "Text Box ID 221: diet", "Text Box ID 222: legal", "Text
+    Box ID 223: sports", "Text Box ID 224: divorce", "Text Box ID 225: manners", "Text
+    Box ID 226: super", "Text Box ID 227: computers", "Text Box ID 228: wheels+tires",
+    "Text Box ID 229: computer", "Text Box ID 230: event", "Text Box ID 231: craig
+    newmark", "Text Box ID 232: dying", "Text Box ID 233: marriage", "Text Box ID
+    234: tax", "Text Box ID 235: electronics", "Text Box ID 236: creative", "Text
+    Box ID 237: labor", "Text Box ID 238: philanthropies", "Text Box ID 239: eco",
+    "Text Box ID 240: money", "Text Box ID 241: travel", "Text Box ID 242: crew",
+    "Text Box ID 243: talent", "Text Box ID 244: feedbk", "Text Box ID 245: music",
+    "Text Box ID 246: tv", "Text Box ID 247: domestic", "Text Box ID 248: writing",
+    "Text Box ID 249: film", "Text Box ID 250: open", "Text Box ID 251: vegan", "Text
+    Box ID 252: fixit", "Text Box ID 253: parent", "Text Box ID 254: words", "Text
+    Box ID 255: food", "Text Box ID 256: resumes", "Text Box ID 257: pets", "Text
+    Box ID 258: writing", "Text Box ID 259: @2024 craigslist help safety privacy terms
+    about app", "Text Box ID 260: sitemap", "Icon Box ID 261: the number 7.", "Icon
+    Box ID 262: the number 2.", "Icon Box ID 263: the number 4.", "Icon Box ID 264:
+    the number 3.", "Icon Box ID 265: the number 1."]'
+  som_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/7fda7692-a209-11ef-8a94-7ee5fc72c695_2.png
+  url: https://collegestation.craigslist.org/
+  uuid: 7fda7692-a209-11ef-8a94-7ee5fc72c695
+ab53db52-a212-11ef-bf60-7ee5fc72c695:
+  id: ab53db52-a212-11ef-bf60-7ee5fc72c695
+  image_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/ab53db52-a212-11ef-bf60-7ee5fc72c695_1.png
+  info: ''
+  label_coordinates: '{"0": [5.0, 8.0, 250.0, 24.0], "1": [863.0, 12.0, 154.0, 19.0],
+    "2": [28.0, 94.0, 79.0, 16.0], "3": [455.0, 93.00000762939453, 134.0, 16.999984741210938],
+    "4": [880.0, 91.00001525878906, 60.0, 18.999984741210938], "5": [32.0, 113.0,
+    260.0, 19.0], "6": [28.0, 162.0, 284.0, 19.0], "7": [28.0, 184.0, 76.0, 19.0],
+    "8": [40.0, 441.0, 108.0, 19.0], "9": [47.0, 469.0, 113.0, 17.0], "10": [528.0,
+    466.0, 249.0, 19.0], "11": [525.0, 486.0, 98.0, 23.0], "12": [47.0, 516.0, 106.0,
+    18.0], "13": [527.0, 510.0, 184.0, 19.0], "14": [528.0, 533.0, 241.0, 19.0], "15":
+    [528.0, 555.0, 149.0, 18.0], "16": [29.0, 632.0, 51.0, 19.0], "17": [28.0, 678.0,
+    92.0, 19.0], "18": [28.0, 696.0, 485.0, 22.0], "19": [28.0, 724.0, 101.0, 19.0],
+    "20": [43.0, 781.0, 85.0, 19.0], "21": [47.0, 807.0000610351562, 40.0, 19.0],
+    "22": [336.0, 811.0, 80.0, 20.0], "23": [51.0, 827.0, 153.0, 19.0], "24": [341.0,
+    845.0, 198.0, 18.0], "25": [551.0, 842.0, 145.0, 21.0], "26": [688.0, 843.0, 132.0,
+    19.0], "27": [47.0, 857.9999389648438, 161.0, 23.0], "28": [48.0, 878.0, 232.0,
+    19.0], "29": [343.0, 878.0, 93.0, 15.0], "30": [576.0, 878.0, 64.0, 15.0], "31":
+    [688.0, 878.0, 85.0, 15.0], "32": [47.0, 901.9999389648438, 222.0, 19.0], "33":
+    [47.0, 926.0, 184.0, 19.0], "34": [44.0, 998.0, 87.0, 18.0], "35": [45.0, 1020.0,
+    123.0, 19.0], "36": [48.0, 1046.0, 40.0, 15.0], "37": [281.0, 1046.0, 76.0, 15.0],
+    "38": [513.0, 1046.0, 26.0, 16.0], "39": [28.0, 1127.0, 465.0, 18.0], "40": [895.0,
+    1162.0, 96.0, 32.0], "41": [46.6107177734375, 1059.84423828125, 218.05865478515625,
+    25.80126953125], "42": [880.4278564453125, 108.08876037597656, 111.3779296875,
+    24.251068115234375], "43": [280.15179443359375, 1059.7344970703125, 216.8216552734375,
+    25.9482421875], "44": [34.7122802734375, 203.97958374023438, 955.4053955078125,
+    212.64874267578125], "45": [314.08087158203125, 932.7477416992188, 699.0950927734375,
+    27.0142822265625], "46": [343.70989990234375, 893.0174560546875, 109.8951416015625,
+    21.5489501953125]}'
+  name: Offer form with title
+  parsed_content: '["Text Box ID 0: CL college station > jobs > security", "Text Box
+    ID 1: [ log in ] [ create account ]", "Text Box ID 2: posting title", "Text Box
+    ID 3: city or neighborhood", "Text Box ID 4: ZIP code", "Text Box ID 5: Hiring
+    LLM Software Developer", "Text Box ID 6: Only one job description per posting
+    please.", "Text Box ID 7: description", "Text Box ID 8:  posting details", "Text
+    Box ID 9: employment type", "Text Box ID 10:  direct contact by recruiters is
+    ok", "Text Box ID 11:  internship", "Text Box ID 12: experience level", "Text
+    Box ID 13:  non-profit organization", "Text Box ID 14:  relocation assistance
+    available", "Text Box ID 15:  telecommuting ok", "Text Box ID 16: job title",
+    "Text Box ID 17: compensation", "Text Box ID 18: describe compensation here (please
+    be as detailed as possible)", "Text Box ID 19: company name", "Text Box ID 20:
+    contact info", "Text Box ID 21: email", "Text Box ID 22: phone/text", "Text Box
+    ID 23: Your email address", "Text Box ID 24:  show my phone number", "Text Box
+    ID 25:   phone calls OK", "Text Box ID 26:  text/sms OK", "Text Box ID 27: email
+    privacy options [?]", "Text Box ID 28: O CL mail relay (recommended)", "Text Box
+    ID 29: phone number", "Text Box ID 30: extension", "Text Box ID 31: contact name",
+    "Text Box ID 32: O show my real email address", "Text Box ID 33: O no replies
+    to this email", "Text Box ID 34: location info", "Text Box ID 35:  show address",
+    "Text Box ID 36: street", "Text Box ID 37: cross street", "Text Box ID 38: city",
+    "Text Box ID 39:  ok to highlight this job opening for persons with disabilities
+    [?]", "Text Box ID 40: continue", "Icon Box ID 41: a blank or empty space.", "Icon
+    Box ID 42: a white background with a green border.", "Icon Box ID 43: a blank
+    or empty space.", "Icon Box ID 44: an airplane flying over a city.", "Icon Box
+    ID 45: a white background with a black border.", "Icon Box ID 46: a blank space
+    or a placeholder for an image."]'
+  som_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/ab53db52-a212-11ef-bf60-7ee5fc72c695_2.png
+  url: ''
+  uuid: ab53db52-a212-11ef-bf60-7ee5fc72c695
+baf1c9ec-a213-11ef-bb9c-7ee5fc72c695:
+  id: baf1c9ec-a213-11ef-bb9c-7ee5fc72c695
+  image_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/baf1c9ec-a213-11ef-bb9c-7ee5fc72c695_1.png
+  info: ''
+  label_coordinates: '{"0": [5.0, 8.0, 250.0, 24.0], "1": [863.0, 12.0, 154.0, 19.0],
+    "2": [29.0, 93.0, 79.0, 18.0], "3": [455.0, 93.00000762939453, 134.0, 16.999984741210938],
+    "4": [880.0, 91.00001525878906, 60.0, 18.999984741210938], "5": [29.0, 111.0,
+    264.0, 23.0], "6": [453.0, 110.0, 130.0, 23.0], "7": [883.0, 111.0, 57.0, 21.0],
+    "8": [28.0, 162.0, 284.0, 19.0], "9": [28.0, 184.0, 76.0, 19.0], "10": [40.0,
+    441.0, 108.0, 19.0], "11": [47.0, 469.0, 113.0, 17.0], "12": [528.0, 466.0, 249.0,
+    19.0], "13": [525.0, 486.0, 98.0, 23.0], "14": [47.0, 516.0, 106.0, 18.0], "15":
+    [527.0, 510.0, 184.0, 19.0], "16": [528.0, 533.0, 241.0, 19.0], "17": [528.0,
+    555.0, 149.0, 18.0], "18": [29.0, 632.0, 51.0, 19.0], "19": [28.0, 678.0, 92.0,
+    19.0], "20": [28.0, 696.0, 485.0, 22.0], "21": [28.0, 724.0, 101.0, 19.0], "22":
+    [43.0, 781.0, 85.0, 19.0], "23": [47.0, 807.0000610351562, 40.0, 19.0], "24":
+    [336.0, 811.0, 80.0, 20.0], "25": [51.0, 827.0, 153.0, 19.0], "26": [341.0, 845.0,
+    198.0, 18.0], "27": [551.0, 842.0, 145.0, 21.0], "28": [688.0, 843.0, 132.0, 19.0],
+    "29": [47.0, 857.9999389648438, 161.0, 23.0], "30": [48.0, 878.0, 232.0, 19.0],
+    "31": [343.0, 878.0, 93.0, 15.0], "32": [576.0, 878.0, 64.0, 15.0], "33": [688.0,
+    878.0, 85.0, 15.0], "34": [47.0, 901.9999389648438, 222.0, 19.0], "35": [47.0,
+    926.0, 184.0, 19.0], "36": [44.0, 998.0, 87.0, 18.0], "37": [45.0, 1020.0, 124.0,
+    19.0], "38": [48.0, 1046.0, 40.0, 15.0], "39": [281.0, 1046.0, 76.0, 15.0], "40":
+    [513.0, 1046.0, 26.0, 16.0], "41": [28.0, 1127.0, 465.0, 18.0], "42": [895.0,
+    1162.0, 96.0, 32.0], "43": [46.6107177734375, 1059.84423828125, 218.05868530273438,
+    25.80126953125], "44": [280.15179443359375, 1059.7344970703125, 216.8216552734375,
+    25.9482421875], "45": [32.87054443359375, 204.12652587890625, 956.2715454101562,
+    208.6826171875], "46": [314.0809020996094, 932.7477416992188, 699.09521484375,
+    27.0142822265625], "47": [343.70989990234375, 893.0174560546875, 109.8948974609375,
+    21.5489501953125]}'
+  name: form with ZIP Code
+  parsed_content: '["Text Box ID 0: CL college station > jobs > security", "Text Box
+    ID 1: [ log in ] [ create account ]", "Text Box ID 2: posting title", "Text Box
+    ID 3: city or neighborhood", "Text Box ID 4: ZIP code", "Text Box ID 5: Hiring
+    LLM Software Developer", "Text Box ID 6: College Station", "Text Box ID 7: 77840",
+    "Text Box ID 8: Only one job description per posting please.", "Text Box ID 9:
+    description", "Text Box ID 10:  posting details", "Text Box ID 11: employment
+    type", "Text Box ID 12:  direct contact by recruiters is ok", "Text Box ID 13:  internship",
+    "Text Box ID 14: experience level", "Text Box ID 15:  non-profit organization",
+    "Text Box ID 16:  relocation assistance available", "Text Box ID 17:  telecommuting
+    ok", "Text Box ID 18: job title", "Text Box ID 19: compensation", "Text Box ID
+    20: describe compensation here (please be as detailed as possible)", "Text Box
+    ID 21: company name", "Text Box ID 22: contact info", "Text Box ID 23: email",
+    "Text Box ID 24: phone/text", "Text Box ID 25: Your email address", "Text Box
+    ID 26:  show my phone number", "Text Box ID 27:   phone calls OK", "Text Box ID
+    28:  text/sms OK", "Text Box ID 29: email privacy options [?]", "Text Box ID 30:
+    O CL mail relay (recommended)", "Text Box ID 31: phone number", "Text Box ID 32:
+    extension", "Text Box ID 33: contact name", "Text Box ID 34: O show my real email
+    address", "Text Box ID 35: O no replies to this email", "Text Box ID 36: location
+    info", "Text Box ID 37:  show address", "Text Box ID 38: street", "Text Box ID
+    39: cross street", "Text Box ID 40: city", "Text Box ID 41:  ok to highlight this
+    job opening for persons with disabilities [?]", "Text Box ID 42: continue", "Icon
+    Box ID 43: a blank or empty space.", "Icon Box ID 44: a blank or empty space.",
+    "Icon Box ID 45: an airplane flying over a city.", "Icon Box ID 46: a white background
+    with a black border.", "Icon Box ID 47: a blank space or a placeholder for an
+    image."]'
+  som_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/baf1c9ec-a213-11ef-bb9c-7ee5fc72c695_2.png
+  url: ''
+  uuid: baf1c9ec-a213-11ef-bb9c-7ee5fc72c695
+c05d969e-a20a-11ef-9562-7ee5fc72c695:
+  id: c05d969e-a20a-11ef-9562-7ee5fc72c695
+  image_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/c05d969e-a20a-11ef-9562-7ee5fc72c695_1.png
+  info: ''
+  label_coordinates: '{"0": [9.0, 10.0, 130.0, 21.0], "1": [863.0, 10.0, 155.0, 21.0],
+    "2": [27.0, 91.0, 327.0, 18.0], "3": [50.0, 129.0, 106.0, 17.0], "4": [49.0, 157.99998474121094,
+    108.0, 19.0], "5": [49.0, 186.0, 175.0, 18.0], "6": [49.0, 234.0, 143.0, 20.0],
+    "7": [51.0, 264.0, 142.0, 18.0], "8": [50.0, 313.0, 153.0, 18.0], "9": [49.0,
+    341.0, 155.0, 20.0], "10": [49.0, 370.0, 153.0, 18.0], "11": [48.0, 398.0000305175781,
+    156.0, 20.0], "12": [50.0, 447.9999694824219, 136.0, 17.0], "13": [49.0, 496.0,
+    110.0, 22.0], "14": [49.0, 525.0, 121.0, 19.0], "15": [28.0, 574.0, 93.0, 29.0]}'
+  name: post types choice page
+  parsed_content: '["Text Box ID 0: CL college station", "Text Box ID 1: [ log in
+    ] [ create account ]", "Text Box ID 2: what type of posting is this: (see prohibited)",
+    "Text Box ID 3: O job offered", "Text Box ID 4: O gig offered", "Text Box ID 5:
+    O resume / job wanted", "Text Box ID 6: O housing offered", "Text Box ID 7: O
+    housing wanted", "Text Box ID 8: O for sale by owner", "Text Box ID 9: O for sale
+    by dealer", "Text Box ID 10: O wanted by owner", "Text Box ID 11: O wanted by
+    dealer", "Text Box ID 12: O service offered", "Text Box ID 13: O community", "Text
+    Box ID 14: O event / class", "Text Box ID 15: continue"]'
+  som_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/c05d969e-a20a-11ef-9562-7ee5fc72c695_2.png
+  url: ''
+  uuid: c05d969e-a20a-11ef-9562-7ee5fc72c695
+d7edc89e-a212-11ef-bf60-7ee5fc72c695:
+  id: d7edc89e-a212-11ef-bf60-7ee5fc72c695
+  image_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/d7edc89e-a212-11ef-bf60-7ee5fc72c695_1.png
+  info: ''
+  label_coordinates: '{"0": [5.0, 8.0, 250.0, 24.0], "1": [863.0, 12.0, 154.0, 19.0],
+    "2": [29.0, 93.0, 79.0, 18.0], "3": [455.0, 93.00000762939453, 134.0, 16.999984741210938],
+    "4": [881.0, 94.0, 58.0, 15.0], "5": [29.0, 111.0, 264.0, 23.0], "6": [457.0,
+    113.0, 126.0, 19.0], "7": [28.0, 162.0, 284.0, 19.0], "8": [28.0, 184.0, 76.0,
+    19.0], "9": [40.0, 441.0, 108.0, 19.0], "10": [47.0, 469.0, 113.0, 17.0], "11":
+    [528.0, 466.0, 249.0, 19.0], "12": [525.0, 486.0, 98.0, 23.0], "13": [47.0, 516.0,
+    106.0, 18.0], "14": [527.0, 510.0, 184.0, 19.0], "15": [528.0, 533.0, 241.0, 19.0],
+    "16": [528.0, 555.0, 149.0, 18.0], "17": [29.0, 632.0, 51.0, 19.0], "18": [28.0,
+    678.0, 93.0, 19.0], "19": [28.0, 696.0, 485.0, 22.0], "20": [28.0, 724.0, 101.0,
+    19.0], "21": [43.0, 781.0, 85.0, 19.0], "22": [47.0, 807.0000610351562, 40.0,
+    19.0], "23": [336.0, 811.0, 80.0, 20.0], "24": [51.0, 827.0, 153.0, 19.0], "25":
+    [341.0, 845.0, 198.0, 18.0], "26": [552.0, 842.0, 144.0, 21.0], "27": [688.0,
+    843.0, 132.0, 19.0], "28": [47.0, 857.9999389648438, 161.0, 23.0], "29": [48.0,
+    878.0, 232.0, 19.0], "30": [343.0, 878.0, 93.0, 15.0], "31": [576.0, 878.0, 64.0,
+    15.0], "32": [688.0, 878.0, 85.0, 15.0], "33": [47.0, 901.9999389648438, 222.0,
+    19.0], "34": [47.0, 926.0, 184.0, 19.0], "35": [44.0, 998.0, 87.0, 18.0], "36":
+    [45.0, 1020.0, 124.0, 19.0], "37": [48.0, 1046.0, 40.0, 15.0], "38": [281.0, 1046.0,
+    76.0, 15.0], "39": [513.0, 1046.0, 26.0, 16.0], "40": [28.0, 1127.0, 465.0, 18.0],
+    "41": [895.0, 1162.0, 96.0, 32.0], "42": [46.6107177734375, 1059.84423828125,
+    218.05868530273438, 25.80126953125], "43": [880.6024169921875, 108.08028411865234,
+    111.18115234375, 24.343894958496094], "44": [280.15179443359375, 1059.7344970703125,
+    216.8216552734375, 25.9482421875], "45": [34.364990234375, 205.7611846923828,
+    952.4536743164062, 203.0070037841797], "46": [314.08074951171875, 932.74755859375,
+    699.095703125, 27.0142822265625], "47": [343.70989990234375, 893.0177001953125,
+    109.8941650390625, 21.548828125]}'
+  name: form with location
+  parsed_content: '["Text Box ID 0: CL college station > jobs > security", "Text Box
+    ID 1: [ log in ] [ create account ]", "Text Box ID 2: posting title", "Text Box
+    ID 3: city or neighborhood", "Text Box ID 4: ZIP code", "Text Box ID 5: Hiring
+    LLM Software Developer", "Text Box ID 6: College Station", "Text Box ID 7: Only
+    one job description per posting please.", "Text Box ID 8: description", "Text
+    Box ID 9:  posting details", "Text Box ID 10: employment type", "Text Box ID 11:  direct
+    contact by recruiters is ok", "Text Box ID 12:  internship", "Text Box ID 13:
+    experience level", "Text Box ID 14:  non-profit organization", "Text Box ID 15:  relocation
+    assistance available", "Text Box ID 16:  telecommuting ok", "Text Box ID 17: job
+    title", "Text Box ID 18: compensation", "Text Box ID 19: describe compensation
+    here (please be as detailed as possible)", "Text Box ID 20: company name", "Text
+    Box ID 21: contact info", "Text Box ID 22: email", "Text Box ID 23: phone/text",
+    "Text Box ID 24: Your email address", "Text Box ID 25:  show my phone number",
+    "Text Box ID 26:  phone calls OK", "Text Box ID 27:  text/sms OK", "Text Box ID
+    28: email privacy options [?]", "Text Box ID 29: O CL mail relay (recommended)",
+    "Text Box ID 30: phone number", "Text Box ID 31: extension", "Text Box ID 32:
+    contact name", "Text Box ID 33: O show my real email address", "Text Box ID 34:
+    O no replies to this email", "Text Box ID 35: location info", "Text Box ID 36:  show
+    address", "Text Box ID 37: street", "Text Box ID 38: cross street", "Text Box
+    ID 39: city", "Text Box ID 40:  ok to highlight this job opening for persons with
+    disabilities [?]", "Text Box ID 41: continue", "Icon Box ID 42: a blank or empty
+    space.", "Icon Box ID 43: a white background with a green border.", "Icon Box
+    ID 44: a blank or empty space.", "Icon Box ID 45: an airplane flying over a city.",
+    "Icon Box ID 46: a white background with a black border.", "Icon Box ID 47: a
+    blank space or a placeholder for an image."]'
+  som_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/d7edc89e-a212-11ef-bf60-7ee5fc72c695_2.png
+  url: ''
+  uuid: d7edc89e-a212-11ef-bf60-7ee5fc72c695
+f766659a-a213-11ef-bb9c-7ee5fc72c695:
+  id: f766659a-a213-11ef-bb9c-7ee5fc72c695
+  image_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/f766659a-a213-11ef-bb9c-7ee5fc72c695_1.png
+  info: ''
+  label_coordinates: '{"0": [4.0, 7.0, 252.0, 26.0], "1": [862.0, 11.0, 156.0, 21.0],
+    "2": [28.0, 92.0, 81.0, 20.0], "3": [454.0, 92.00000762939453, 136.0, 18.999984741210938],
+    "4": [879.0, 90.00001525878906, 62.0, 20.999984741210938], "5": [28.0, 110.0,
+    266.0, 25.0], "6": [452.0, 109.0, 132.0, 25.0], "7": [882.0, 110.0, 59.0, 23.0],
+    "8": [27.0, 160.00001525878906, 286.0, 22.0], "9": [30.0, 184.0, 74.0, 17.0],
+    "10": [31.0, 203.0, 189.0, 21.0], "11": [39.0, 440.0, 110.0, 21.0], "12": [76.0,
+    481.0, 115.0, 19.0], "13": [527.0, 465.0, 251.0, 21.0], "14": [524.0, 485.0, 100.0,
+    25.0], "15": [91.0, 531.0, 108.0, 20.0], "16": [526.0, 509.0, 186.0, 21.0], "17":
+    [527.0, 532.0, 243.0, 21.0], "18": [527.0, 554.0, 151.0, 20.0], "19": [28.0, 631.0,
+    53.0, 21.0], "20": [27.0, 677.0, 94.0, 21.0], "21": [27.0, 695.0, 487.0, 24.0],
+    "22": [27.0, 723.0, 103.0, 21.0], "23": [42.0, 780.0, 87.0, 21.0], "24": [46.0,
+    806.0000610351562, 42.0, 21.0], "25": [335.0, 810.0, 82.0, 22.0], "26": [50.0,
+    826.0, 155.0, 21.0], "27": [340.0, 844.0, 200.0, 20.0], "28": [550.0, 841.0, 147.0,
+    23.0], "29": [687.0, 842.0, 134.0, 21.0], "30": [46.0, 856.9999389648438, 163.0,
+    25.0], "31": [47.0, 877.0, 234.0, 21.0], "32": [342.0, 877.0, 95.0, 17.0], "33":
+    [575.0, 877.0, 66.0, 17.0], "34": [687.0, 877.0, 87.0, 17.0], "35": [46.0, 900.9999389648438,
+    224.0, 21.0], "36": [46.0, 925.0, 186.0, 21.0], "37": [43.0, 997.0, 89.0, 20.0],
+    "38": [44.0, 1019.0, 125.0, 21.0], "39": [47.0, 1045.0, 42.0, 17.0], "40": [280.0,
+    1045.0, 78.0, 17.0], "41": [512.0, 1045.0, 28.0, 18.0], "42": [27.0, 1126.0, 467.0,
+    20.0], "43": [894.0, 1161.0, 98.0, 34.0], "44": [45.610816955566406, 1058.844482421875,
+    220.05828857421875, 27.80078125], "45": [279.15142822265625, 1058.7342529296875,
+    218.822021484375, 27.948486328125], "46": [313.0543212890625, 931.7442626953125,
+    701.158447265625, 29.0225830078125], "47": [342.7106018066406, 892.0426025390625,
+    112.0489501953125, 23.5245361328125]}'
+  name: Form with job description
+  parsed_content: '["Text Box ID 0: CL college station > jobs > security", "Text Box
+    ID 1: [ log in ] [ create account ]", "Text Box ID 2: posting title", "Text Box
+    ID 3: city or neighborhood", "Text Box ID 4: ZIP code", "Text Box ID 5: Hiring
+    LLM Software Developer", "Text Box ID 6: College Station", "Text Box ID 7: 77840",
+    "Text Box ID 8: Only one job description per posting please.", "Text Box ID 9:
+    description", "Text Box ID 10: I need to hire a SWE!!!", "Text Box ID 11:  posting
+    details", "Text Box ID 12: employment type", "Text Box ID 13:  direct contact
+    by recruiters is ok", "Text Box ID 14:  internship", "Text Box ID 15: experience
+    level", "Text Box ID 16:  non-profit organization", "Text Box ID 17:  relocation
+    assistance available", "Text Box ID 18:  telecommuting ok", "Text Box ID 19: job
+    title", "Text Box ID 20: compensation", "Text Box ID 21: describe compensation
+    here (please be as detailed as possible)", "Text Box ID 22: company name", "Text
+    Box ID 23: contact info", "Text Box ID 24: email", "Text Box ID 25: phone/text",
+    "Text Box ID 26: Your email address", "Text Box ID 27:  show my phone number",
+    "Text Box ID 28:   phone calls OK", "Text Box ID 29:  text/sms OK", "Text Box
+    ID 30: email privacy options [?]", "Text Box ID 31: O CL mail relay (recommended)",
+    "Text Box ID 32: phone number", "Text Box ID 33: extension", "Text Box ID 34:
+    contact name", "Text Box ID 35: O show my real email address", "Text Box ID 36:
+    O no replies to this email", "Text Box ID 37: location info", "Text Box ID 38:  show
+    address", "Text Box ID 39: street", "Text Box ID 40: cross street", "Text Box
+    ID 41: city", "Text Box ID 42:  ok to highlight this job opening for persons with
+    disabilities [?]", "Text Box ID 43: continue", "Icon Box ID 44: a blank or empty
+    space.", "Icon Box ID 45: a blank or empty space.", "Icon Box ID 46: a white background
+    with a black border.", "Icon Box ID 47: a blank space or a placeholder for an
+    image."]'
+  som_path: /Users/lhz/Desktop/craigslist_graph/checkpoints/current/static/f766659a-a213-11ef-bb9c-7ee5fc72c695_2.png
+  url: ''
+  uuid: f766659a-a213-11ef-bb9c-7ee5fc72c695

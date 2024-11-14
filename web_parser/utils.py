@@ -259,6 +259,45 @@ def annotate(image_source: np.ndarray, boxes: torch.Tensor, logits: torch.Tensor
     return annotated_frame, label_coordinates
 
 
+def annotate_processed_data(image_source: np.ndarray, boxes: torch.Tensor, logits: torch.Tensor, phrases: List[str], text_scale: float,
+             text_padding=5, text_thickness=2, thickness=3) -> np.ndarray:
+    """
+    This function annotates an image with bounding boxes and labels.
+
+    Parameters:
+    image_source (np.ndarray): The source image to be annotated.
+    boxes (torch.Tensor): A tensor containing bounding box coordinates. in cxcywh format, pixel scale
+    logits (torch.Tensor): A tensor containing confidence scores for each bounding box.
+    phrases (List[str]): A list of labels for each bounding box.
+    text_scale (float): The scale of the text to be displayed. 0.8 for mobile/web, 0.3 for desktop # 0.4 for mind2web
+
+    Returns:
+    np.ndarray: The annotated image.
+    """
+
+    # labels = [f"{phrase}" for phrase in range(boxes.shape[0])]
+    h, w, _ = image_source.shape
+    xyxy = boxes.numpy()
+
+    detections = sv.Detections(xyxy=xyxy)
+
+    labels = [f"{phrase}" for phrase in phrases]
+    print(labels)
+
+    from web_parser.util.box_annotator import BoxAnnotator
+    box_annotator = BoxAnnotator(text_scale=text_scale, text_padding=text_padding, text_thickness=1,
+                                 thickness=thickness)
+    annotated_frame = image_source.copy()
+
+
+    annotated_frame = box_annotator.annotate(scene=annotated_frame, detections=detections, labels=[str(i) for i in range(len(boxes))],
+                                             image_size=(w, h))
+
+    label_coordinates = {f"{phrase}": v for phrase, v in zip(phrases, xyxy)}
+
+    return annotated_frame, label_coordinates
+
+
 def predict(model, image, caption, box_threshold, text_threshold):
     """ Use huggingface model to replace the original model
     """

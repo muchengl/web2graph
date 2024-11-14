@@ -193,6 +193,10 @@ class MainWindow(QMainWindow):
         open_action.triggered.connect(self.open_project_dialog)
         self.toolbar.addAction(open_action)
 
+        refresh = QAction("Refresh", self)
+        refresh.triggered.connect(self.refresh)
+        self.toolbar.addAction(refresh)
+
 
     def new_project_dialog(self):
 
@@ -298,6 +302,24 @@ class MainWindow(QMainWindow):
         d.exec()
 
 
+    def refresh(self):
+        current_state = self.project_manager.fsm_graph.current_state
+
+        self.current_web_image = current_state.web_image
+        self.current_web_som = current_state.som
+
+        self.display_screenshot(self.current_web_som.processed_image)
+
+        self.handle_som(self.current_web_som)
+
+        self._show_state_info(
+            '',
+            '',
+            current_state.state_name,
+            current_state.state_info
+        )
+
+
     """
     Utils
     
@@ -328,8 +350,6 @@ class MainWindow(QMainWindow):
         )
         self._process_current_state()
         self.display_screenshot(self.current_web_som.processed_image)
-
-
 
         self._show_state_info(
             action_name,
@@ -404,8 +424,8 @@ class MainWindow(QMainWindow):
         # self.save_button.setVisible(False)
 
         # Clear the form inputs for next use
-        self.state_name_input.clear()
-        self.state_info_input.clear()
+        # self.state_name_input.clear()
+        # self.state_info_input.clear()
 
 
     def _show_state_info(self,
@@ -489,6 +509,7 @@ class MainWindow(QMainWindow):
         fsm_action = QAction("Show FSM Graph", self)
         fsm_action.triggered.connect(self.project_manager.fsm_graph.show)
         self.toolbar.addAction(fsm_action)
+
 
     def add_horizontal_line(self, layout):
         line = QFrame()

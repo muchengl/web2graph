@@ -129,14 +129,16 @@ class WebParserThread(QThread):
 
 if __name__ == '__main__':
     # Example usage
-    image_path = 'cache.png'
+    image_path = '../cache.png'
     image = Image.open(image_path)
 
     # Initialize models only once
     som_model, caption_model_processor = initialize_models(
-        som_model_path='models/icon_detect/best.pt',
-        caption_model_name="blip2",
-        caption_model_path="models/icon_caption_blip2"
+        som_model_path='../models/icon_detect/best.pt',
+        caption_model_name="icon_caption_blip2",
+        caption_model_path="../models/icon_caption_blip2",
+        # caption_model_path="../models/icon_caption_florence",
+        device='mps'
     )
 
     # Process image with preloaded models
