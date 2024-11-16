@@ -1,4 +1,5 @@
 import asyncio
+import json
 import uuid, io
 from enum import Enum
 from abc import ABC, abstractmethod
@@ -6,6 +7,7 @@ from time import sleep
 
 from PIL import Image
 from PyQt6.QtCore import QThread, pyqtSignal
+from loguru import logger
 from playwright.async_api import async_playwright
 from playwright.sync_api import sync_playwright
 
@@ -63,14 +65,19 @@ class BrowserEnv(ABC):
 
 
 class PlaywrightBrowserEnv(BrowserEnv):
-    def __init__(self, headless=True):
+    def __init__(self, context="", headless=True):
         self.browser = None
         self.page = None
         self.headless = headless
 
+
+        # webarena setup
+        self.storage_state = json.loads(context)
+        # self.cookies_list = self.context.get("cookies", [])
+
     async def start_browser(self):
         self.playwright = await async_playwright().start()
-        self.browser = await self.playwright.chromium.launch()
+        self.browser = await self.playwright.chromium.launch(headless=self.headless)
         self.page = await self.browser.new_page()
         await self.page.set_viewport_size({"width": 1024, "height": 768})
 
@@ -79,12 +86,35 @@ class PlaywrightBrowserEnv(BrowserEnv):
 
     def start_browser_sync(self):
         self.playwright = sync_playwright().start()
-        self.browser = self.playwright.chromium.launch()
+        self.browser = self.playwright.chromium.launch(headless=self.headless)
+
+        context = self.browser.new_context(
+            storage_state=self.storage_state,
+        )
+        cookies = context.cookies()
+        logger.info(f"added cookies_list: {cookies}")
+
         self.page = self.browser.new_page()
         self.page.set_viewport_size({"width": 1024, "height": 768})
 
+
     def navigate_to_sync(self, url: str):
         self.page.goto(url)
+
+
+        # login reddit (for webarena only)
+        if url == 'http://ec2-3-129-227-13.us-east-2.compute.amazonaws.com:9999':
+            logger.info("webarena reddit login!")
+            self.page.goto(f"{url}/login")
+            sleep(2)
+            self.page.get_by_label("Username").fill('testuser')
+            sleep(2)
+            self.page.get_by_label("Password").fill('test1234')
+            sleep(2)
+            self.page.get_by_role("button", name="Log in").click()
+            sleep(2)
+            self.page.goto(url)
+
         sleep(3)
 
     async def click_at_position(self, x: int, y: int):

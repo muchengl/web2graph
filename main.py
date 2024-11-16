@@ -35,7 +35,11 @@ class MainWindow(QMainWindow):
             caption_model_path="models/icon_caption_blip2"
         )
 
-        browser = PlaywrightBrowserEnv()
+        self.browser_config_file = ".auth/reddit_state.json"
+        with open(self.browser_config_file, "r", encoding="utf-8") as file:
+            content = file.read()
+
+        browser = PlaywrightBrowserEnv(context=content, headless=False)
         self.browser = browser
         self.browser.start_browser_sync()
 
