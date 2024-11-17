@@ -103,6 +103,7 @@ class WebState(GraphState):
                 "label_coordinates": json.dumps(self.label_coordinates),
                 "parsed_content": json.dumps(self.parsed_content),
                 "url": self.url,
+                "merge_into": self.merge_into.id if self.merge_into is not None else ''
             }
         }
         yaml.dump(state_data, state_file, default_flow_style=False)

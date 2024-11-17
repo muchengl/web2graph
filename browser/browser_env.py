@@ -79,7 +79,7 @@ class PlaywrightBrowserEnv(BrowserEnv):
         self.playwright = await async_playwright().start()
         self.browser = await self.playwright.chromium.launch(headless=self.headless)
         self.page = await self.browser.new_page()
-        await self.page.set_viewport_size({"width": 1024, "height": 768})
+        await self.page.set_viewport_size({"width": 1024})
 
     async def navigate_to(self, url: str):
         await self.page.goto(url)
@@ -103,11 +103,13 @@ class PlaywrightBrowserEnv(BrowserEnv):
 
 
         # login reddit (for webarena only)
-        if url == 'http://ec2-3-129-227-13.us-east-2.compute.amazonaws.com:9999':
+        logger.info("webarena login!")
+        if 'http://ec2-3-129-227-13.us-east-2.compute.amazonaws.com:9999' in url:
             logger.info("webarena reddit login!")
             self.page.goto(f"{url}/login")
             sleep(2)
-            self.page.get_by_label("Username").fill('testuser')
+            # self.page.get_by_label("Username").fill('testuser')
+            self.page.get_by_label("Username").fill('MarvelsGrantMan136')
             sleep(2)
             self.page.get_by_label("Password").fill('test1234')
             sleep(2)
@@ -121,16 +123,33 @@ class PlaywrightBrowserEnv(BrowserEnv):
         await self.page.mouse.click(x, y)
 
     def click_at_position_sync(self, x: int, y: int):
+
+        if y >= 768:
+            logger.info(f"out of view size, update window size: h={y}")
+            self.page.set_viewport_size({"width": 1024, "height": y+100})
+            sleep(1)
+
         self.page.mouse.click(x, y)
         sleep(3)
+
+        self.page.set_viewport_size({"width": 1024, "height": 768})
+
 
     async def input_at_position(self, x: int, y: int, text: str):
         await self.page.mouse.click(x, y)
         await self.page.keyboard.type(text)
 
     def input_at_position_sync(self, x: int, y: int, text: str):
+        if y >= 768:
+            logger.info(f"out of view size, update window size: h={y}")
+            self.page.set_viewport_size({"width": 1024, "height": y+100})
+            sleep(1)
+
         self.page.mouse.click(x, y)
         self.page.keyboard.type(text)
+        sleep(3)
+
+        self.page.set_viewport_size({"width": 1024, "height": 768})
 
     async def take_full_screenshot(self):
         pass

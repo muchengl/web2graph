@@ -10,7 +10,7 @@ from fsm.abs import Graph
 
 
 class ComplexGraphWidget(pg.GraphicsLayoutWidget):
-    def __init__(self, graph, web_fsm: Graph, k=0.7, iterations=500):
+    def __init__(self, graph, web_fsm: Graph, k=1.5, iterations=500):
         super().__init__()
         self.plot = self.addPlot()  # Create the plot window
         self.plot.hideAxis('bottom')  # Hide the axes

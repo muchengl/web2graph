@@ -18,6 +18,9 @@ class GraphState(ABC):
         self.from_action: list['GraphAction'] = []
         self.to_action: list['GraphAction'] = []
 
+        #
+        self.merge_into: 'GraphState' = None
+
         from fsm.abs.action import GraphAction
 
 

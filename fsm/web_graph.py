@@ -269,6 +269,9 @@ class WebGraph(FSMGraph):
     def _load_state(self, state_file_path):
         states: dict[Any, WebState] = {}
         self.states = states
+
+        merges = {}
+
         with open(state_file_path, "r") as state_file:
 
             state_data = yaml.safe_load(state_file)
@@ -287,6 +290,12 @@ class WebGraph(FSMGraph):
                 parsed_content = state_info.get("parsed_content", None)
 
                 url = state_info.get("url", None)
+
+                merge_into_id = state_info.get("merge_into", None)
+
+                # merge relationship
+                if merge_into_id is not None:
+                    merges[id] = merge_into_id
 
 
                 # Load image if path is provided
@@ -323,6 +332,21 @@ class WebGraph(FSMGraph):
                 logger.info(f"load state: {state_id}")
 
                 print(state)
+
+
+        # Reconstruct merge relationship
+        for k,v in merges.items():
+            if k in states and v in states:
+                logger.info(f"merge {k} and {v}")
+                states[k].merge_into = states[v]
+
+                self.v_graph.add_node_pair(
+                    states[k].id,
+                    states[v].id,
+                    states[k].state_name,
+                    states[v].state_name,
+                    "green","green"
+                )
 
         return states
 

@@ -17,6 +17,7 @@ from project.manager import new_project, ProjectManager
 from project.metadata import ProjectMetadata
 from ui.action_input_dialog import ActionInputBox
 from ui.image_dialog import ImageDialog
+from ui.merge_state_project_dialog import MergeStateProjectDialog
 from ui.new_project_input_dialog import NewProjectInputDialog
 from ui.open_project_input_dialog import OpenProjectInputDialog
 from utils.image_util import pil_image_to_qpixmap
@@ -35,6 +36,7 @@ class MainWindow(QMainWindow):
             caption_model_path="models/icon_caption_blip2"
         )
 
+        # webarena
         self.browser_config_file = ".auth/reddit_state.json"
         with open(self.browser_config_file, "r", encoding="utf-8") as file:
             content = file.read()
@@ -117,6 +119,13 @@ class MainWindow(QMainWindow):
         self.add_horizontal_line(input_layout)
 
 
+        self.merge_button = QPushButton("Merge State")
+        self.merge_button.clicked.connect(self.merge_state)
+
+        input_layout.addWidget(self.merge_button)
+
+        self.add_horizontal_line(input_layout)
+
         # action list
         self.action_list_title = QLabel(f"Action List:")
 
@@ -129,7 +138,7 @@ class MainWindow(QMainWindow):
 
         self.add_horizontal_line(input_layout)
 
-        # ====================== hide ===========================
+        # ====================== state info ===========================
         self.current_state_info = QLabel(f"Current State Info:")
         input_layout.addWidget(self.current_state_info)
 
@@ -142,6 +151,7 @@ class MainWindow(QMainWindow):
 
         self.save_button = QPushButton("Save")
         self.save_button.clicked.connect(self.save_state)
+
 
         # State form layout to collect state name and info
         self.state_form_layout = QFormLayout()
@@ -322,6 +332,16 @@ class MainWindow(QMainWindow):
             current_state.state_name,
             current_state.state_info
         )
+
+
+    def merge_state(self):
+        print("merge state")
+        d = MergeStateProjectDialog(self.project_manager.fsm_graph)
+        d.exec()
+
+        if d.flag:
+            self.project_manager.save_project()
+
 
 
     """
