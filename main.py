@@ -17,6 +17,7 @@ from project.manager import new_project, ProjectManager
 from project.metadata import ProjectMetadata
 from ui.action_input_dialog import ActionInputBox
 from ui.image_dialog import ImageDialog
+from ui.image_editor_dialog import ImageEditorDialog
 from ui.merge_state_project_dialog import MergeStateProjectDialog
 from ui.new_project_input_dialog import NewProjectInputDialog
 from ui.open_project_input_dialog import OpenProjectInputDialog
@@ -118,11 +119,16 @@ class MainWindow(QMainWindow):
 
         self.add_horizontal_line(input_layout)
 
-
+        # state merge
         self.merge_button = QPushButton("Merge State")
         self.merge_button.clicked.connect(self.merge_state)
-
         input_layout.addWidget(self.merge_button)
+
+        # image editor
+        self.editor_button = QPushButton("State Image Editor")
+        self.editor_button.clicked.connect(self.state_image_editor)
+        input_layout.addWidget(self.editor_button)
+
 
         self.add_horizontal_line(input_layout)
 
@@ -343,6 +349,51 @@ class MainWindow(QMainWindow):
             self.project_manager.save_project()
 
 
+    def state_image_editor(self):
+        print("editor state")
+
+        current_state = self.project_manager.fsm_graph.current_state
+
+        rectangles = []
+        for idx in current_state.label_coordinates:
+            item = {}
+            item['id'] = idx
+
+            # coordinates = []
+            # raw_coord = current_state.label_coordinates[idx]
+            # coordinates.append(raw_coord[0])
+            # coordinates.append(raw_coord[1])
+            # coordinates.append(raw_coord[0] + raw_coord[2])
+            # coordinates.append(raw_coord[1] + raw_coord[3])
+
+
+            item['coordinates'] = current_state.label_coordinates[idx]
+            item['metadata'] = current_state.parsed_content[int(idx)]
+            rectangles.append(item)
+
+
+        # STEP 01: open image editor
+        d = ImageEditorDialog(
+            current_state.web_image,
+            rectangles = rectangles
+        )
+        result = d.exec()
+
+        if result == QDialog.DialogCode.Rejected:
+            logger.warning("State image editor rejected")
+            return
+
+        cfgs = d.get_configurations()
+        logger.info(f"Image editor: {cfgs}")
+
+        # STEP 02: update state info
+        self.project_manager.fsm_graph.current_state.update_som(cfgs)
+
+
+        # STEP 03: save state
+        self.project_manager.save_project()
+
+
 
     """
     Utils
@@ -465,6 +516,9 @@ class MainWindow(QMainWindow):
 
     def _process_current_state(self):
         self.current_web_image = self.browser.take_full_screenshot_sync()
+
+        # todo: add
+
 
         current_web_som = process_image_with_models(
             image=self.current_web_image,

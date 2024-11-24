@@ -1,7 +1,7 @@
 import json
 import uuid
 from pathlib import Path
-from typing import TextIO
+from typing import TextIO, Any
 
 import yaml
 from PIL.Image import Image
@@ -38,6 +38,26 @@ class WebState(GraphState):
         self.url = url
 
         super().__init__(state_name, state_info)
+
+
+    def update_som(self, labels: list[dict[str, Any]]):
+        """
+        :param labels:
+        :return:
+        """
+
+        new_label_coordinates = {}
+        new_parsed_content = []
+        for label in labels:
+            new_label_coordinates[label['id']] = label['coordinates']
+            new_parsed_content.append(label['metadata'])
+
+        self.label_coordinates = new_label_coordinates
+        self.parsed_content = new_parsed_content
+        self.som.label_coordinates = new_label_coordinates
+        self.som.parsed_content = new_parsed_content
+
+        # todo: generate new som image
 
 
     def generate_id(self) -> str:
