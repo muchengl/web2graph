@@ -16,6 +16,7 @@ from browser.browser_env import PlaywrightBrowserEnv, ScreenshotThread, BrowserS
 from project.manager import new_project, ProjectManager
 from project.metadata import ProjectMetadata
 from ui.action_input_dialog import ActionInputBox
+from ui.group_action_dialog import GroupActionDialog
 from ui.image_dialog import ImageDialog
 from ui.image_editor_dialog import ImageEditorDialog
 from ui.merge_state_project_dialog import MergeStateProjectDialog
@@ -73,6 +74,7 @@ class MainWindow(QMainWindow):
 
         # Create a splitter for adjustable layout between image and input sections
         self.splitter = QSplitter(Qt.Orientation.Horizontal)
+
 
 
 
@@ -141,6 +143,10 @@ class MainWindow(QMainWindow):
         input_layout.addWidget(self.action_list_title)
         input_layout.addWidget(self.som_list)
         self.som_list.itemDoubleClicked.connect(self.action_list_double_clicked)
+
+        self.group_action_button = QPushButton("Group Action")
+        self.group_action_button.clicked.connect(self.group_action)
+        input_layout.addWidget(self.group_action_button)
 
         self.add_horizontal_line(input_layout)
 
@@ -393,13 +399,11 @@ class MainWindow(QMainWindow):
         # STEP 03: save state
         self.project_manager.save_project()
 
-
-
     """
-    Utils
     
-    """
+    Take Actions
 
+    """
     def action_list_double_clicked(self, item):
         list_idx = self.som_list.row(item)
 
@@ -460,7 +464,76 @@ class MainWindow(QMainWindow):
         # self.save_button.setVisible(True)
 
 
+    def group_action(self):
+        d = GroupActionDialog(self.project_manager.fsm_graph.current_state.parsed_content)
+        result = d.exec()
 
+        if result == QDialog.DialogCode.Rejected:
+            logger.warning("Group action rejected")
+            return
+
+        action_list = d.get_waiting_list_data()
+        logger.info(f"Waiting Action list: {action_list}")
+
+        for action in action_list:
+            # {'action_type': 'CLICK', 'action_content': '', 'action_name': 'Text Box ID 8: community', 'action_info': ''}
+            action_type = action['action_type']
+            action_id = action['action_id']
+            action_content = action['action_content']
+            action_name = action['action_name']
+            action_info = action['action_info']
+
+            logger.info(f"Action: {action_id} , Action_content: {action_content}, Info: {action_info}")
+
+            current_state = self.project_manager.fsm_graph.current_state
+
+            self.executed_action = execute_action(
+                list_idx=action_id,
+                current_web_image=current_state.web_image,
+                current_web_som=current_state.som,
+                browser=self.browser,
+                selected_action=action_type,
+                action_info=action_info,
+                action_content=action_content
+            )
+
+
+            # self._process_current_state()
+            # self.display_screenshot(self.current_web_som.processed_image)
+
+            #
+            self.current_web_image = self.browser.take_full_screenshot_sync()
+            self.display_screenshot(self.current_web_image)
+
+
+            reply = QMessageBox.question(
+                self,
+                'Notice',
+                "Do you want to continue execution？",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+
+            if reply == QMessageBox.StandardButton.No:
+                print('No...')
+                break
+
+
+
+
+            # self._show_state_info(
+            #     action_name,
+            #     action_info,
+            #     self.project_manager.fsm_graph.current_state.state_name,
+            #     self.project_manager.fsm_graph.current_state.state_info
+            # )
+
+
+        # todo: record action group into graph
+
+    """
+      Utils
+
+    """
     def save_state(self):
         if hasattr(self, 'executed_action') is not True:
             # todo: update node
@@ -517,16 +590,21 @@ class MainWindow(QMainWindow):
     def _process_current_state(self):
         self.current_web_image = self.browser.take_full_screenshot_sync()
 
-        # todo: add
 
-
-        current_web_som = process_image_with_models(
-            image=self.current_web_image,
-            som_model=self.model_manager.get_som_model(),
-            caption_model_processor=self.model_manager.get_caption_model()
+        current_web_som = WebSOM(
+            self.current_web_image,
+            {},
+            []
         )
-
         self.handle_som(current_web_som)
+
+        # current_web_som = process_image_with_models(
+        #     image=self.current_web_image,
+        #     som_model=self.model_manager.get_som_model(),
+        #     caption_model_processor=self.model_manager.get_caption_model()
+        # )
+        #
+        # self.handle_som(current_web_som)
 
 
     def handle_som(self, web_som: WebSOM):

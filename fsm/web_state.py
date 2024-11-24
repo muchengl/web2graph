@@ -3,14 +3,17 @@ import uuid
 from pathlib import Path
 from typing import TextIO, Any
 
+import numpy as np
+import torch
 import yaml
-from PIL.Image import Image
+from PIL import Image
 from loguru import logger
 
 from browser.browser_env import PlaywrightBrowserEnv
 from fsm.abs import GraphState
 from project.checkpoint_config import CheckpointConfig
 from web_parser.omni_parser import WebSOM
+from web_parser.utils import annotate_processed_data
 
 
 class WebState(GraphState):
@@ -57,7 +60,42 @@ class WebState(GraphState):
         self.som.label_coordinates = new_label_coordinates
         self.som.parsed_content = new_parsed_content
 
-        # todo: generate new som image
+        # generate new som image
+        self.annotate_image()
+
+
+    def annotate_image(self):
+        # Load image
+        image_source = np.array(self.web_image)
+
+        # Prepare data for annotation
+        boxes = torch.tensor([self.label_coordinates[key] for key in self.label_coordinates])  # Example bounding boxes
+        boxes[:, 2] = boxes[:, 0] + boxes[:, 2]  # x2 = x + w
+        boxes[:, 3] = boxes[:, 1] + boxes[:, 3]
+
+
+        logits = torch.ones(len(self.label_coordinates))  # Dummy logits
+
+        phrases = list(self.parsed_content)
+
+        text_scale = 0.4
+
+        # Call the annotate function
+        annotated_image, label_coordinates = annotate_processed_data(
+            image_source=image_source,
+            boxes=boxes,
+            logits=logits,
+            phrases=phrases,
+            text_scale=text_scale
+        )
+
+        pil_image = Image.fromarray(annotated_image)
+        pil_image.show()
+
+        self.som_image = pil_image
+        self.som.processed_image = pil_image
+
+        print(f"Annotated image and Save")
 
 
     def generate_id(self) -> str:
