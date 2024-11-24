@@ -25,7 +25,7 @@ class ComplexGraphWidget(pg.GraphicsLayoutWidget):
 
         self.k = k
         self.iterations = iterations
-        self.pos = nx.spring_layout(self.graph, k=self.k, iterations=self.iterations)  # 弹性布局
+        self.pos = nx.spring_layout(self.graph, k=self.k, iterations=self.iterations)
         # self.pos = nx.shell_layout(self.graph)
 
 
@@ -83,7 +83,6 @@ class ComplexGraphWidget(pg.GraphicsLayoutWidget):
     def on_node_click(self, plot, points):
         node_id = points[0].data()
         print(f"Clicked node ID: {node_id}")
-
 
 
         fsm = self.web_fsm
