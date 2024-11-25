@@ -353,6 +353,9 @@ class WebGraph(FSMGraph):
 
     def _load_actions(self, action_file_path):
         actions: dict[Any, WebAction] = {}
+
+        self.actions = actions
+
         with open(action_file_path, "r") as action_file:
 
             action_data = yaml.safe_load(action_file)

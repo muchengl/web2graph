@@ -15,6 +15,7 @@ class Graph(ABC):
         self.stack = [root_state]
 
         self.states = {}
+        self.actions = {}
 
         # Mark the root state as visited
         if root_state is not None:

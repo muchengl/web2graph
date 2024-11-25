@@ -224,6 +224,8 @@ class MainWindow(QMainWindow):
         self.toolbar.addAction(refresh)
 
 
+
+
     def new_project_dialog(self):
 
         dialog = NewProjectInputDialog()
@@ -311,7 +313,11 @@ class MainWindow(QMainWindow):
         self.label_title.setText(f"Name: {self.project_manager.metadata.name} \n"
                                  f"Path: {self.project_manager.metadata.path} \n"
                                  f"URL: {self.project_manager.metadata.url} \n")
-        self.add_graph_bar()
+
+        self._add_save_bar()
+        self._add_graph_bar()
+
+
 
         self._show_state_info(
             '',
@@ -530,6 +536,10 @@ class MainWindow(QMainWindow):
 
         # todo: record action group into graph
 
+
+
+
+
     """
       Utils
 
@@ -591,20 +601,21 @@ class MainWindow(QMainWindow):
         self.current_web_image = self.browser.take_full_screenshot_sync()
 
 
-        current_web_som = WebSOM(
-            self.current_web_image,
-            {},
-            []
-        )
-        self.handle_som(current_web_som)
-
-        # current_web_som = process_image_with_models(
-        #     image=self.current_web_image,
-        #     som_model=self.model_manager.get_som_model(),
-        #     caption_model_processor=self.model_manager.get_caption_model()
+        # current_web_som = WebSOM(
+        #     self.current_web_image,
+        #     {},
+        #     []
         # )
-        #
         # self.handle_som(current_web_som)
+
+        # enable
+        current_web_som = process_image_with_models(
+            image=self.current_web_image,
+            som_model=self.model_manager.get_som_model(),
+            caption_model_processor=self.model_manager.get_caption_model()
+        )
+
+        self.handle_som(current_web_som)
 
 
     def handle_som(self, web_som: WebSOM):
@@ -661,10 +672,16 @@ class MainWindow(QMainWindow):
             self.display_screenshot(self.current_web_som.processed_image)
 
 
-    def add_graph_bar(self):
+    def _add_graph_bar(self):
         fsm_action = QAction("Show FSM Graph", self)
         fsm_action.triggered.connect(self.project_manager.fsm_graph.show)
         self.toolbar.addAction(fsm_action)
+
+    def _add_save_bar(self):
+
+        save = QAction("Save project", self)
+        save.triggered.connect(self.project_manager.save_project)
+        self.toolbar.addAction(save)
 
 
     def add_horizontal_line(self, layout):

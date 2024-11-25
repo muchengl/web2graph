@@ -14,6 +14,11 @@ from fsm.abs import GraphState
 from project.checkpoint_config import CheckpointConfig
 from web_parser.omni_parser import WebSOM
 from web_parser.utils import annotate_processed_data
+from enum import Enum
+
+
+class StateFlag(Enum):
+    V_STATE = 1 # not a real state
 
 
 class WebState(GraphState):

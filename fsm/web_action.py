@@ -23,11 +23,14 @@ class WebAction(GraphAction):
         self.uuid = str(uuid.uuid1())
         super().__init__(action_name, action_info)
 
+
     def generate_id(self) -> str:
         return self.uuid
 
+
     def to_prompt(self):
         return self._to_openai_prompt()
+
 
     def _to_openai_prompt(self) -> list[dict]:
         # prompts = []
@@ -40,6 +43,7 @@ class WebAction(GraphAction):
         # return prompts
 
         pass
+
 
     def do_checkpoint(self,
                       cfg: CheckpointConfig,

@@ -2,8 +2,14 @@ import sys
 import pygraphviz as pgv
 import networkx as nx
 import pyqtgraph as pg
-from PyQt6.QtWidgets import QApplication, QDialog, QVBoxLayout
-from PyQt6.QtGui import QColor, QFont
+from PIL.Image import Image
+from PIL.ImageQt import ImageQt
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QDialog, QVBoxLayout, QLineEdit, QTextEdit, QScrollArea, QWidget, QLabel, \
+    QPushButton, QHBoxLayout
+from PyQt6.QtGui import QColor, QFont, QPixmap
+
+# from fsm import WebGraph
 
 
 class ComplexGraphWidget(pg.GraphicsLayoutWidget):
@@ -74,12 +80,119 @@ class ComplexGraphWidget(pg.GraphicsLayoutWidget):
         )
         self.plot.addItem(line)
 
+
+
     def on_node_click(self, plot, points):
         node_id = points[0].data()
         print(f"Clicked node ID: {node_id}")
 
         fsm = self.web_fsm
-        fsm.move_to_state(node_id)
+
+        state_name_edit, state_info_edit = None, None
+        action_name_edit, action_info_edit = None, None
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle(f"Node Info: {node_id}")
+        dialog_layout = QHBoxLayout(dialog)  # Use horizontal layout for left-right sections
+
+
+        # Left section: Image display
+        image_layout = QVBoxLayout()  # Vertical layout for image and toggle button
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)  # Allow resizing of scroll content
+        scroll_widget = QWidget()
+        scroll_layout = QVBoxLayout(scroll_widget)
+
+        if node_id in fsm.states:
+
+            state = fsm.states[node_id]
+
+
+            pixmap1 = QPixmap.fromImage(ImageQt(state.web_image))
+            pixmap2 = QPixmap.fromImage(ImageQt(state.som_image))
+
+            image_label = QLabel()
+            image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Center image in the scroll area
+            image_label.setPixmap(pixmap1)
+
+            def toggle_image():
+                if image_label.pixmap() == pixmap1:
+                    image_label.setPixmap(pixmap2)
+                else:
+                    image_label.setPixmap(pixmap1)
+
+            toggle_button = QPushButton("Toggle Image")
+            toggle_button.clicked.connect(toggle_image)
+
+
+
+            # Add image and button to the scrollable area
+            scroll_layout.addWidget(image_label)
+            scroll_layout.addWidget(toggle_button)
+            scroll_widget.setLayout(scroll_layout)
+            scroll_area.setWidget(scroll_widget)
+            scroll_area.setWidgetResizable(True)
+            image_layout.addWidget(scroll_area)
+
+        # Right section: Editable details
+        edit_layout = QVBoxLayout()
+        if node_id in fsm.states:
+            state_name_edit = QLineEdit(state.state_name)
+            state_info_edit = QTextEdit(state.state_info)
+
+            move_button = QPushButton("Move to State")
+            move_button.clicked.connect(lambda: fsm.move_to_state(node_id))
+
+            edit_layout.addWidget(QLabel("State Name:"))
+            edit_layout.addWidget(state_name_edit)
+            edit_layout.addWidget(QLabel("State Info:"))
+            edit_layout.addWidget(state_info_edit)
+            edit_layout.addWidget(move_button)
+
+        elif node_id in fsm.actions:
+            action = fsm.actions[node_id]
+            action_name_edit = QLineEdit(action.action_name)
+            action_info_edit = QTextEdit(action.action_info)
+
+            edit_layout.addWidget(QLabel("Action Name:"))
+            edit_layout.addWidget(action_name_edit)
+            edit_layout.addWidget(QLabel("Action Info:"))
+            edit_layout.addWidget(action_info_edit)
+
+        # Save button
+        save_button = QPushButton("Save")
+        save_button.clicked.connect(
+            lambda: self.save_changes(node_id, state_name_edit, state_info_edit, action_name_edit, action_info_edit)
+        )
+        edit_layout.addWidget(save_button)
+
+        # Add left and right layouts to the dialog
+        dialog_layout.addLayout(image_layout)
+        dialog_layout.addLayout(edit_layout)
+
+        dialog.setLayout(dialog_layout)
+        dialog.resize(800, 800)
+        dialog.exec()
+
+
+
+    def save_changes(self, node_id, state_name_edit=None, state_info_edit=None, action_name_edit=None, action_info_edit=None):
+        fsm = self.web_fsm
+
+        if node_id in fsm.states:
+            state = fsm.states[node_id]
+            state.state_name = state_name_edit.text()
+            state.state_info = state_info_edit.toPlainText()
+            print(f"Update state {node_id}: {state.state_name}, {state.state_info}")
+
+        elif node_id in fsm.actions:
+            action = fsm.actions[node_id]
+            action.action_name = action_name_edit.text()
+            action.action_info = action_info_edit.toPlainText()
+            print(f"Update action {node_id}: {action.action_name}, {action.action_info}")
+
+
+
 
 
 class VGraph:
