@@ -3,18 +3,23 @@
 import ast
 import re
 
+from PIL.Image import Image
 from loguru import logger
 import os
 import openai
 
-from runtime.llm import invoke_llm_
+from runtime.llm import invoke_llm_by_chat
+from runtime.runtime import BasicRuntime
+from utils.image_util import pil_image_to_base64
+from utils.print_util import pretty_print
 
-logger.remove()
-logger.add("log/run.log", rotation="10 MB", retention="10 days", compression="zip")
 
 class Agent:
-    def __init__(self):
+
+    def __init__(self, task: str):
         self.conversation_history = []
+        self.task = task
+
         self.system_prompt = """
 You are a website agent. You will be given a task, screenshots of the current web page, and the action space of the current web page. 
 You need to generate actions based on this information and complete the task step by step.
@@ -82,22 +87,75 @@ Note, To ensure success:
             "content": self.system_prompt
         })
 
+        self.runtime = BasicRuntime()
 
-    def get_llm_response(self, prompt=""):
 
-        # todo: 在fsm上行走，每一步都提供当前 image 和 action space
+    def construct_prompt(self, state_info, action_space, raw_img, label_img: Image):
+        # label_img.show()
 
-        if prompt != "":
-            # Add the user's input to the conversation
-            self.conversation_history.append({
-                "role": "user",
-                "content": prompt
-            })
+        label_img_base64 = pil_image_to_base64(label_img)
+        raw_img_base64 = pil_image_to_base64(raw_img)
 
-        # assistant_reply = invoke_local_llm(self.conversation_history)
-        assistant_reply = invoke_llm_(self.conversation_history)
+        current_state_prompt = {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": f"Current State Information: {state_info}",
+                },
 
-        # Update conversation history
+                # Action Space
+
+                {
+                    "type": "text",
+                    "text": "Below is the Labeled-Image of the current state and its action space:\n\n",
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,{label_img_base64}",
+                    },
+                },
+                {
+                    "type": "text",
+                    "text": f"Current State's Action Space\n: {action_space}",
+                },
+
+
+                # Realtime Screenshot
+                {
+                    "type": "text",
+                    "text": "Below is the Screenshot of current website\n\n",
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,{raw_img_base64}",
+                    },
+                },
+
+            ]
+        }
+
+
+        return current_state_prompt
+
+
+    def get_llm_response(self):
+
+        state_info, action_space, raw_img, label_img = self.runtime.get_state_obs_space()
+
+        prompt = self.construct_prompt(state_info, action_space, raw_img, label_img)
+        self.conversation_history.append(prompt)
+
+        pretty_print(self.conversation_history)
+
+        self.conversation_history.append({
+            "role": "user",
+            "content": self.task
+        })
+
+        assistant_reply = invoke_llm_by_chat(self.conversation_history)
         self.conversation_history.append({
             "role": "assistant",
             "content": assistant_reply
@@ -128,58 +186,19 @@ Note, To ensure success:
 
 
     def execute_action(self, action_str: str) -> str:
+        logger.info(f"Prepare to Execute Action: {action_str}")
 
-        # print(f"Execute action: {action_str}")
-        logger.info(f"Execute action: {action_str}")
+        self.runtime.fsm.current_state.som_image.show()
+        input("Press Enter to continue...")
 
-        err = ""
-
-        action = action_str.split(" ")
-
-        try:
-            if action[0] == "CLICK":
-                id = action[1]
-
-                # self.conversation_history.append({
-                #     "role": "system",
-                #     "content": "..."
-                # })
-
-                # execute action
+        result = self.runtime.take_action(action_str)
 
 
-                # append history
-
-
-
-
-            elif action[0] == "TYPE":
-                id = action[1]
-                content = action[2]
-
-
-
-            elif action[0] == "QUIT":
-                return "QUIT"
-
-
-            else:
-                err = f"Unknown action: {action_str}"
-
-        except Exception as e:
-            err = f"Error executing action '{action_str}': {e}"
-
-        if err!="":
-            logger.error(err)
-        return err
-
-
-
-    def run(self, prompt=""):
-        print("Agent is running.\n")
+    def run(self):
+        print("Agent is running.......\n")
         while True:
             print("\n====================================================\n")
-            assistant_reply = self.get_llm_response(prompt)
+            assistant_reply = self.get_llm_response()
             if "QUIT" in assistant_reply:
                 break
 
@@ -191,23 +210,27 @@ Note, To ensure success:
 
                 output = self.execute_action(action)
 
-                if output != "":
-                    self.conversation_history.append({
-                        "role": "user",
-                        "content": output
-                    })
-                else:
-                    self.conversation_history.append({
-                        "role": "user",
-                        "content": "Action Executed"
-                    })
+                # todo: add output into prompt
+
+                # if output != "":
+                #     self.conversation_history.append({
+                #         "role": "user",
+                #         "content": output
+                #     })
+                # else:
+                #     self.conversation_history.append({
+                #         "role": "user",
+                #         "content": "Action Executed"
+                #     })
+
+            input("Press Enter to continue...")
 
 
 if __name__ == "__main__":
-    agent = Agent()
-
-    print("You can use this AI assistant to help you complete website tasks like:")
+    print("You can use this AI assistant to help you complete website tasks,")
     print()
     prompt = input("What do you want to do today? \n")
-    # prompt =''
-    agent.run(prompt)
+
+    prompt = 'I need to register a craigslist account.'
+    agent = Agent(prompt)
+    agent.run()

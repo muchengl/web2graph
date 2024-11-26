@@ -2,7 +2,7 @@ import os
 
 import openai
 
-def invoke_llm(prompt: str) -> str:
+def invoke_llm_by_prompt(prompt: str) -> str:
     openai.api_key = os.getenv('OPENAI_API_KEY')
 
     client = openai.OpenAI(
@@ -17,8 +17,7 @@ def invoke_llm(prompt: str) -> str:
                     "content": prompt,
                 }
             ],
-            model="gpt-4o",
-            max_tokens=3000,
+            model="gpt-4o"
         )
 
         output = response.choices[0].message.content
@@ -27,7 +26,7 @@ def invoke_llm(prompt: str) -> str:
 
     return output
 
-def invoke_llm_(msg: list) -> str:
+def invoke_llm_by_chat(msg) -> str:
     openai.api_key = os.getenv('OPENAI_API_KEY')
 
     client = openai.OpenAI(
@@ -37,7 +36,7 @@ def invoke_llm_(msg: list) -> str:
     chat_completion = client.chat.completions.create(
         messages=msg,
         model='gpt-4o',
-        temperature=0
+        # temperature=0
     )
 
     # return chat_completion
