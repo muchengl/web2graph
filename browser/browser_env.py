@@ -72,7 +72,10 @@ class PlaywrightBrowserEnv(BrowserEnv):
 
 
         # webarena setup
-        self.storage_state = json.loads(context)
+        if context != "":
+            self.storage_state = json.loads(context)
+        else:
+            self.storage_state = None
         # self.cookies_list = self.context.get("cookies", [])
 
     async def start_browser(self):
@@ -88,11 +91,13 @@ class PlaywrightBrowserEnv(BrowserEnv):
         self.playwright = sync_playwright().start()
         self.browser = self.playwright.chromium.launch(headless=self.headless)
 
-        context = self.browser.new_context(
-            storage_state=self.storage_state,
-        )
-        cookies = context.cookies()
-        logger.info(f"added cookies_list: {cookies}")
+
+        if self.storage_state != None:
+            context = self.browser.new_context(
+                storage_state=self.storage_state,
+            )
+            cookies = context.cookies()
+            logger.info(f"added cookies_list: {cookies}")
 
         self.page = self.browser.new_page()
         self.page.set_viewport_size({"width": 1024, "height": 768})
@@ -101,21 +106,20 @@ class PlaywrightBrowserEnv(BrowserEnv):
     def navigate_to_sync(self, url: str):
         self.page.goto(url)
 
-
         # login reddit (for webarena only)
-        logger.info("webarena login!")
-        if 'http://ec2-3-129-227-13.us-east-2.compute.amazonaws.com:9999' in url:
-            logger.info("webarena reddit login!")
-            self.page.goto(f"{url}/login")
-            sleep(2)
-            # self.page.get_by_label("Username").fill('testuser')
-            self.page.get_by_label("Username").fill('MarvelsGrantMan136')
-            sleep(2)
-            self.page.get_by_label("Password").fill('test1234')
-            sleep(2)
-            self.page.get_by_role("button", name="Log in").click()
-            sleep(2)
-            self.page.goto(url)
+        # logger.info("webarena login!")
+        # if 'http://ec2-3-129-227-13.us-east-2.compute.amazonaws.com:9999' in url:
+        #     logger.info("webarena reddit login!")
+        #     self.page.goto(f"{url}/login")
+        #     sleep(2)
+        #     # self.page.get_by_label("Username").fill('testuser')
+        #     self.page.get_by_label("Username").fill('MarvelsGrantMan136')
+        #     sleep(2)
+        #     self.page.get_by_label("Password").fill('test1234')
+        #     sleep(2)
+        #     self.page.get_by_role("button", name="Log in").click()
+        #     sleep(2)
+        #     self.page.goto(url)
 
         sleep(3)
 

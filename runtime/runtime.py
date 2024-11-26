@@ -3,18 +3,19 @@ from project.manager import ProjectManager
 from project.metadata import ProjectMetadata
 
 
-class Runtime:
+class BasicRuntime:
 
     def __init__(self):
-        fsm_path = '/Users/lhz/Desktop/REDDIT'
+        # fsm_path = '/Users/lhz/Desktop/REDDIT'
+        fsm_path = '/Users/lhz/Desktop/craigslist_graph'
 
         metadata: ProjectMetadata = ProjectMetadata(fsm_path)
 
-        browser_config_file = "../.auth/reddit_state.json"
-        with open(browser_config_file, "r", encoding="utf-8") as file:
-            content = file.read()
+        # browser_config_file = "../.auth/reddit_state.json"
+        # with open(browser_config_file, "r", encoding="utf-8") as file:
+        #     content = file.read()
 
-        browser = PlaywrightBrowserEnv(context=content, headless=False)
+        browser = PlaywrightBrowserEnv(headless=False)
         self.browser = browser
         self.browser.start_browser_sync()
 
@@ -22,6 +23,7 @@ class Runtime:
         fsm_manager.load_project()
 
         # fsm_manager.fsm_graph.show()
+
 
     def plan(self):
         # 1. Planner
@@ -31,6 +33,7 @@ class Runtime:
 
         pass
 
+
     def execute(self):
         pass
 
@@ -38,4 +41,4 @@ class Runtime:
 
 
 if __name__ == '__main__':
-    main = Runtime()
+    main = BasicRuntime()
