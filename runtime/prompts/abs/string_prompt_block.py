@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from prompts.abs.prompt_block import PromptBlock
+from runtime.prompts.abs.prompt_block import PromptBlock
 
 
 class StringPromptBlock(PromptBlock):

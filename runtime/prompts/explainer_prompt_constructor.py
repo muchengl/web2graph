@@ -1,12 +1,12 @@
 from typing import Any
 import re
 
-from agent.web_action import WebAction
-from agent.web_state import WebState
-from prompts.prompt_constructor import PromptConstructor
-from prompts.warehouse.action_examples import ActionExamples
-from prompts.warehouse.basic_explainer import BasicExplainer
-from prompts.warehouse.web_fsm_block import WebStateToPromptBlock, WebActionToPromptBlock
+from fsm.web_action import WebAction
+from fsm.web_state import WebState
+from runtime.prompts.prompt_constructor import PromptConstructor
+from runtime.prompts.warehouse.action_examples import ActionExamples
+from runtime.prompts.warehouse.basic_explainer import BasicExplainer
+from runtime.prompts.warehouse.web_fsm_block import WebStateToPromptBlock, WebActionToPromptBlock
 
 
 class ExplainPromptConstructor(PromptConstructor):

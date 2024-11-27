@@ -1,8 +1,8 @@
 from abc import abstractmethod
 
-from agent.web_action import WebAction
-from agent.web_state import WebState
-from prompts.abs.fsm_prompt_block import StateToPromptBlock, ActionToPromptBlock
+from fsm.web_action import WebAction
+from fsm.web_state import WebState
+from runtime.prompts.abs.fsm_prompt_block import StateToPromptBlock, ActionToPromptBlock
 
 
 class WebStateToPromptBlock(StateToPromptBlock):

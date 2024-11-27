@@ -2,8 +2,8 @@ import os
 
 from PIL import Image
 
-from browser_env.utils import pil_to_b64
-from prompts.abs.openai_prompt_block import OpenAIPromptBlock
+from utils.image_util import pil_image_to_base64
+from runtime.prompts.abs.openai_prompt_block import OpenAIPromptBlock
 
 
 class ActionExamples(OpenAIPromptBlock):
@@ -35,7 +35,7 @@ class ActionExamples(OpenAIPromptBlock):
             {
                 "type": "image_url",
                 "image_url": {
-                    "url": pil_to_b64(page_screenshot_img_01)
+                    "url": pil_image_to_base64(page_screenshot_img_01)
                 },
             }
         )
@@ -51,7 +51,7 @@ class ActionExamples(OpenAIPromptBlock):
             {
                 "type": "image_url",
                 "image_url": {
-                    "url": pil_to_b64(page_screenshot_img_02)
+                    "url": pil_image_to_base64(page_screenshot_img_02)
                 },
             }
         )

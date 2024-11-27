@@ -1,4 +1,4 @@
-from prompts.abs.string_prompt_block import StringPromptBlock
+from runtime.prompts.abs.string_prompt_block import StringPromptBlock
 
 prompt = """
 You are an autonomous agent responsible for exploring a website. 

@@ -3,9 +3,9 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 
-from prompts.abs.openai_prompt_block import OpenAIPromptBlock
-from prompts.abs.prompt_block import PromptBlock
-from prompts.abs.string_prompt_block import StringPromptBlock
+from runtime.prompts.abs.openai_prompt_block import OpenAIPromptBlock
+from runtime.prompts.abs.prompt_block import PromptBlock
+from runtime.prompts.abs.string_prompt_block import StringPromptBlock
 
 logger = logging.getLogger(__name__)
 

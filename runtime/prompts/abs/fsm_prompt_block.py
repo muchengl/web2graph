@@ -1,8 +1,8 @@
 
 from abc import ABC, abstractmethod
 
-from fsm import GraphState, GraphAction
-from prompts.abs.openai_prompt_block import OpenAIPromptBlock
+from fsm.abs import GraphState, GraphAction
+from runtime.prompts.abs.openai_prompt_block import OpenAIPromptBlock
 
 
 class StateToPromptBlock(OpenAIPromptBlock):

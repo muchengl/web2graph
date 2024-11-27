@@ -1,4 +1,4 @@
-from prompts.abs.string_prompt_block import StringPromptBlock
+from runtime.prompts.abs.string_prompt_block import StringPromptBlock
 
 
 class StringBlock(StringPromptBlock):

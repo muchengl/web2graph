@@ -1,4 +1,4 @@
-from prompts.abs.string_prompt_block import StringPromptBlock
+from runtime.prompts.abs.string_prompt_block import StringPromptBlock
 
 prompt = """
 You are an LM Agent that explores the browser environment autonomously. Now I will provide you with a screenshot of a web page and related information. Please generate a set of test data that you think is universal for the specified scope.
