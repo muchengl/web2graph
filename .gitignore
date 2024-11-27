@@ -1,1 +1,7 @@
-./models/icon_*
+models/icon_*
+
+.auth
+
+.idea
+
+#webarena_ex
