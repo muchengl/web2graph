@@ -1,9 +1,10 @@
-# web2graph
+# agent-leman
 
+## web2graph
 ```shell
-# FSM Construct
+# FSM Constructor
 python main.py
 
-# Agent
+# Basic Agent
 python agent.py
 ```
