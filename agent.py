@@ -14,20 +14,26 @@ from utils.image_util import pil_image_to_base64
 from utils.print_util import pretty_print
 
 
-class Agent:
+class BasicAgent:
+    """
+    Force the Agent to execute tasks according to the FSM. Cannot execute tasks outside the FSM.
+    """
 
-    def __init__(self, task: str):
-        self.conversation_history = []
+    def __init__(self, fsm_path: str, task: str):
+
         self.task = task
 
+        self.runtime = BasicRuntime(fsm_path)
+
+        self.conversation_history = []
         self.system_prompt = """
-You are a website agent. You will be given a task, screenshots of the current web page, and the action space of the current web page. 
+You are a website agent. You will be given a task, screenshots of the current web page, and the Action Space of the current web page. 
 You need to generate actions based on this information and complete the task step by step.
 
 Available Actions:
 - CLICK ID
 - TYPE ID CONTENT
-- QUIT 
+- QUIT
 
 You can take actions in the following format:
 ACTION_TYPE ID [ACTION_CONTENT]
@@ -80,6 +86,7 @@ Note that this is not a fixed step, you need to understand it according to the t
 Note, To ensure success: 
     1. Respond only with actions, and do not include any additional text.
     2. Respond only one action at a time
+    3. If you think the task is complete, generate QUIT
 """
 
         self.conversation_history.append({
@@ -87,7 +94,6 @@ Note, To ensure success:
             "content": self.system_prompt
         })
 
-        self.runtime = BasicRuntime()
 
 
     def construct_prompt(self, state_info, action_space, raw_img, label_img: Image):
@@ -101,11 +107,10 @@ Note, To ensure success:
             "content": [
                 {
                     "type": "text",
-                    "text": f"Current State Information: {state_info}",
+                    "text": f"Current State Description: {state_info}",
                 },
 
-                # Action Space
-
+                # Action Space of current state
                 {
                     "type": "text",
                     "text": "Below is the Labeled-Image of the current state and its action space:\n\n",
@@ -133,7 +138,6 @@ Note, To ensure success:
                         "url": f"data:image/png;base64,{raw_img_base64}",
                     },
                 },
-
             ]
         }
 
@@ -148,7 +152,8 @@ Note, To ensure success:
         prompt = self.construct_prompt(state_info, action_space, raw_img, label_img)
         self.conversation_history.append(prompt)
 
-        pretty_print(self.conversation_history)
+        # debug
+        # pretty_print(self.conversation_history)
 
         self.conversation_history.append({
             "role": "user",
@@ -163,14 +168,11 @@ Note, To ensure success:
 
         logger.info(f"LLM response: {assistant_reply}")
 
+
         return assistant_reply
 
 
     def parse_actions(self, assistant_reply):
-        """
-        Parses the assistant's reply to extract actions.
-        Assumes each action is on a new line starting with 'Action:'.
-        """
         actions = []
         lines = assistant_reply.strip().split('\n')
         for line in lines:
@@ -196,8 +198,10 @@ Note, To ensure success:
 
     def run(self):
         print("Agent is running.......\n")
+
         while True:
             print("\n====================================================\n")
+
             assistant_reply = self.get_llm_response()
             if "QUIT" in assistant_reply:
                 break
@@ -227,10 +231,12 @@ Note, To ensure success:
 
 
 if __name__ == "__main__":
+    fsm_path = '/Users/lhz/Desktop/craigslist_graph'
+
     print("You can use this AI assistant to help you complete website tasks,")
     print()
     prompt = input("What do you want to do today? \n")
 
-    prompt = 'I need to register a craigslist account.'
-    agent = Agent(prompt)
+    # prompt = 'I need to register a craigslist account.'
+    agent = BasicAgent(fsm_path, prompt)
     agent.run()

@@ -10,9 +10,9 @@ from project.metadata import ProjectMetadata
 
 class BasicRuntime:
 
-    def __init__(self):
+    def __init__(self, fsm_path):
         # fsm_path = '/Users/lhz/Desktop/REDDIT'
-        fsm_path = '/Users/lhz/Desktop/craigslist_graph'
+        # fsm_path = '/Users/lhz/Desktop/craigslist_graph'
 
         metadata: ProjectMetadata = ProjectMetadata(fsm_path)
 
@@ -28,8 +28,6 @@ class BasicRuntime:
         self.browser.navigate_to_sync(self.proj_manager.url)
 
         self.fsm = self.proj_manager.fsm_graph
-
-        # fsm_manager.fsm_graph.show()
 
 
 
@@ -58,6 +56,13 @@ class BasicRuntime:
 
 
     def take_action(self, action_str: str):
+        """
+        Keep sync between Browser and FSM
+
+        :param action_str:
+        :return:
+        """
+
         err = ""
         current_state: WebState = self.fsm.current_state
 
