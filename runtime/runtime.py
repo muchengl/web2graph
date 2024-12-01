@@ -29,6 +29,11 @@ class BasicRuntime:
 
         self.fsm = self.proj_manager.fsm_graph
 
+        self.fsm.show(reload=True, flag = "sync")
+        logger.info("runtime init successfully")
+
+        self.edge_styles = []
+
 
 
     def get_state_obs_space(self) -> [str, str, Image, Image]:
@@ -128,7 +133,15 @@ class BasicRuntime:
         aid = int(aid)
         for act in current_state.to_action:
             if act.action.action_target_id == aid:
+                old_id = self.fsm.current_state.id
+
                 self.fsm.current_state = act.to_state[0]
+
+                logger.info(f"State Transfer: {old_id} -> {self.fsm.current_state.id}, via action: {act.id}")
+
+                self.edge_styles.append([old_id, act.id, self.fsm.current_state.id, "Red", "2.0"])
+                self.fsm.show(edge_styles=self.edge_styles, reload=True, flag = "sync")
+
                 return True
 
         return False

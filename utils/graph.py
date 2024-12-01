@@ -8,6 +8,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QDialog, QVBoxLayout, QLineEdit, QTextEdit, QScrollArea, QWidget, QLabel, \
     QPushButton, QHBoxLayout
 from PyQt6.QtGui import QColor, QFont, QPixmap
+from loguru import logger
+
 
 # from fsm import WebGraph
 
@@ -44,14 +46,35 @@ class ComplexGraphWidget(pg.GraphicsLayoutWidget):
             pos[node.name] = (x, -y)  # Flip y to match PyQtGraph's coordinate system
         return pos
 
+    # def draw_graph(self):
+    #     for node, (x, y) in self.pos.items():
+    #         color = QColor(*self.graph.nodes[node]["color"])
+    #         label = self.graph.nodes[node].get("label", "")
+    #         self.add_node(node, (x, y), color, label)
+    #
+    #     for edge in self.graph.edges(data=True):
+    #         self.add_edge(self.pos[edge[0]], self.pos[edge[1]], weight=edge[2].get("weight", 1))
+
     def draw_graph(self):
+        self.plot.clear()
+
         for node, (x, y) in self.pos.items():
             color = QColor(*self.graph.nodes[node]["color"])
             label = self.graph.nodes[node].get("label", "")
             self.add_node(node, (x, y), color, label)
 
         for edge in self.graph.edges(data=True):
-            self.add_edge(self.pos[edge[0]], self.pos[edge[1]], weight=edge[2].get("weight", 1))
+            color = edge[2].get("color", (150, 150, 150))
+            width = edge[2].get("width", 1)
+            self.add_edge(self.pos[edge[0]], self.pos[edge[1]], weight=width, color=color)
+
+    def add_edge(self, pos1, pos2, weight=1, color=(150, 150, 150)):
+        line = pg.PlotDataItem(
+            [pos1[0], pos2[0]], [pos1[1], pos2[1]],
+            pen=pg.mkPen(color=color, width=weight)
+        )
+        self.plot.addItem(line)
+
 
     def add_node(self, node_id, pos, color, label):
         node = pg.ScatterPlotItem(
@@ -73,12 +96,12 @@ class ComplexGraphWidget(pg.GraphicsLayoutWidget):
         label_item.setPos(pos[0], pos[1] - 0.1)  # Adjust label position below the node
         self.plot.addItem(label_item)
 
-    def add_edge(self, pos1, pos2, weight=1):
-        line = pg.PlotDataItem(
-            [pos1[0], pos2[0]], [pos1[1], pos2[1]],
-            pen=pg.mkPen(color=(150, 150, 150, 100), width=weight)
-        )
-        self.plot.addItem(line)
+    # def add_edge(self, pos1, pos2, weight=1):
+    #     line = pg.PlotDataItem(
+    #         [pos1[0], pos2[0]], [pos1[1], pos2[1]],
+    #         pen=pg.mkPen(color=(150, 150, 150, 100), width=weight)
+    #     )
+    #     self.plot.addItem(line)
 
 
 
@@ -200,6 +223,29 @@ class VGraph:
         self.G = nx.DiGraph()
         self.web_fsm = graph
 
+    def set_edge_style(self,
+                       node1_id: str,
+                       node2_id: str,
+                       edge_color: str = "red",
+                       edge_width: float = 2.0):
+        """
+        Sets the style (color, width) of an edge in the graph.
+
+        Parameters:
+            node1_id (str): The source node ID.
+            node2_id (str): The destination node ID.
+            edge_color (str): The color of the edge (e.g., "red", "blue").
+            edge_width (float): The width of the edge line.
+        """
+        if self.G.has_edge(node1_id, node2_id):
+            self.G[node1_id][node2_id]["color"] = QColor(edge_color).getRgb()[:3]
+            self.G[node1_id][node2_id]["width"] = edge_width
+            print(f"Edge style updated: {node1_id} -> {node2_id} with color {edge_color} and width {edge_width}")
+        else:
+            logger.warning(f"can't find {node1_id} to {node2_id}")
+
+
+
     def add_node_pair(self,
                       node1_id: str,
                       node2_id: str,
@@ -207,12 +253,10 @@ class VGraph:
                       node2_label: str,
                       node1_color: str = "yellow",
                       node2_color: str = "green"):
-        # Add nodes with attributes
         self.G.add_node(node1_id, label=node1_label, color=QColor(node1_color).getRgb()[:3])
         self.G.add_node(node2_id, label=node2_label, color=QColor(node2_color).getRgb()[:3])
-
-        # Add edge between nodes
         self.G.add_edge(node1_id, node2_id)
+
 
     def get_graph_widget(self):
         # Create a ComplexGraphWidget to be embedded
@@ -231,6 +275,20 @@ class VGraph:
         dialog.setLayout(layout)
         dialog.resize(800, 800)  # Set initial size
         dialog.exec()  # Show as a modal dialog
+
+    def show_graph_popup_async(self, parent=None):
+        # Create a dialog with the graph widget as a popup
+        dialog = QDialog(parent)
+        dialog.setWindowTitle("FSM Graph Visualization")
+        layout = QVBoxLayout(dialog)
+
+        # Add the graph widget to the layout
+        graph_widget = self.get_graph_widget()
+        layout.addWidget(graph_widget)
+
+        dialog.setLayout(layout)
+        dialog.resize(800, 800)  # Set initial size
+        dialog.show()
 
 
 # Usage example:

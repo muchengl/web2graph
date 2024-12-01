@@ -2,8 +2,11 @@
 # agent.py
 import ast
 import re
+import sys
+import threading
 
 from PIL.Image import Image
+from PyQt6.QtWidgets import QApplication
 from loguru import logger
 import os
 import openai
@@ -230,13 +233,28 @@ Note, To ensure success:
             input("Press Enter to continue...")
 
 
+def run_agent_in_background(agent):
+    """
+    Run the agent's main logic in a separate thread.
+    """
+    def agent_logic():
+        agent.run()
+    threading.Thread(target=agent_logic, daemon=True).start()
+
 if __name__ == "__main__":
+    app = QApplication(sys.argv)
+
     fsm_path = '/Users/lhz/Desktop/craigslist_graph'
 
     print("You can use this AI assistant to help you complete website tasks,")
     print()
-    prompt = input("What do you want to do today? \n")
+    # prompt = input("What do you want to do today? \n")
 
-    # prompt = 'I need to register a craigslist account.'
+    prompt = 'I need to register a craigslist account.'
+    # prompt = 'I need to post a job ad to hire a new software development engineer'
+
     agent = BasicAgent(fsm_path, prompt)
     agent.run()
+
+    # run_agent_in_background(agent)
+    # sys.exit(app.exec())

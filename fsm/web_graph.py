@@ -78,30 +78,46 @@ class WebGraph(FSMGraph):
 
 
 
-    def show(self):
-
+    def show(self, edge_styles: list=[], reload=True, flag='sync'):
+        # if reload:
         for edge in self.edges:
             old_state: WebState = edge[0]
             action: WebAction = edge[1]
             new_state: WebState = edge[2]
 
-            self.v_graph.add_node_pair(
-                                old_state.id,
-                                action.id,
-                                old_state.state_name,
-                                action.action_name,
-                                'green',
-                                'yellow')
+            # logger.info(f"{old_state.id} -> {action.id} -> {new_state.id}")
 
             self.v_graph.add_node_pair(
-                                action.id,
-                                new_state.id,
-                                action.action_name,
-                                new_state.state_name,
-                                'yellow',
-                                'green')
+                                    old_state.id,
+                                    action.id,
+                                    old_state.state_name,
+                                    action.action_name,
+                                    'green',
+                                    'yellow')
 
-        self.v_graph.show_graph_popup()
+            self.v_graph.add_node_pair(
+                                    action.id,
+                                    new_state.id,
+                                    action.action_name,
+                                    new_state.state_name,
+                                    'yellow',
+                                    'green')
+
+        for edge in edge_styles:
+            old_state = edge[0]
+            action = edge[1]
+            new_state = edge[2]
+            color = edge[3]
+            w = float(edge[4])
+
+            self.v_graph.set_edge_style(str(old_state), str(action), color, w)
+            self.v_graph.set_edge_style(str(action), str(new_state), color, w)
+
+
+        if flag=='sync':
+            self.v_graph.show_graph_popup()
+        elif flag=='async':
+            self.v_graph.show_graph_popup_async()
 
 
     def insert_node(self,
