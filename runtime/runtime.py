@@ -29,7 +29,7 @@ class BasicRuntime:
 
         self.fsm = self.proj_manager.fsm_graph
 
-        self.fsm.show(reload=True, flag = "sync")
+        # self.fsm.show(reload=True, flag = "sync")
         logger.info("runtime init successfully")
 
         self.edge_styles = []
@@ -140,7 +140,12 @@ class BasicRuntime:
                 logger.info(f"State Transfer: {old_id} -> {self.fsm.current_state.id}, via action: {act.id}")
 
                 self.edge_styles.append([old_id, act.id, self.fsm.current_state.id, "Red", "2.0"])
-                self.fsm.show(edge_styles=self.edge_styles, reload=True, flag = "sync")
+                self.fsm.show(
+                    edge_styles=self.edge_styles,
+                    reload=True,
+                    flag = "sync",
+                    mode='matplotlib'
+                )
 
                 return True
 

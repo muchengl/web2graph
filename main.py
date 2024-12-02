@@ -674,8 +674,11 @@ class MainWindow(QMainWindow):
 
     def _add_graph_bar(self):
         fsm_action = QAction("Show FSM Graph", self)
-        fsm_action.triggered.connect(self.project_manager.fsm_graph.show)
+        fsm_action.triggered.connect(self._show_fsm_graph)
         self.toolbar.addAction(fsm_action)
+
+    def _show_fsm_graph(self):
+        self.project_manager.fsm_graph.show()
 
     def _add_save_bar(self):
 

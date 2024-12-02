@@ -78,7 +78,12 @@ class WebGraph(FSMGraph):
 
 
 
-    def show(self, edge_styles: list=[], reload=True, flag='sync'):
+    def show(self,
+             edge_styles: list=None,
+             reload=True,
+             flag='sync',
+             mode = 'pyqtgraph'):
+
         # if reload:
         for edge in self.edges:
             old_state: WebState = edge[0]
@@ -103,21 +108,22 @@ class WebGraph(FSMGraph):
                                     'yellow',
                                     'green')
 
-        for edge in edge_styles:
-            old_state = edge[0]
-            action = edge[1]
-            new_state = edge[2]
-            color = edge[3]
-            w = float(edge[4])
+        if edge_styles is not None:
+            for edge in edge_styles:
+                old_state = edge[0]
+                action = edge[1]
+                new_state = edge[2]
+                color = edge[3]
+                w = float(edge[4])
 
-            self.v_graph.set_edge_style(str(old_state), str(action), color, w)
-            self.v_graph.set_edge_style(str(action), str(new_state), color, w)
+                self.v_graph.set_edge_style(str(old_state), str(action), color, w)
+                self.v_graph.set_edge_style(str(action), str(new_state), color, w)
 
 
-        if flag=='sync':
-            self.v_graph.show_graph_popup()
-        elif flag=='async':
-            self.v_graph.show_graph_popup_async()
+        # if flag=='sync':
+        self.v_graph.show_graph_popup(mode=mode)
+        # elif flag=='async':
+        #     self.v_graph.show_graph_popup_async()
 
 
     def insert_node(self,

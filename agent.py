@@ -242,7 +242,7 @@ def run_agent_in_background(agent):
     threading.Thread(target=agent_logic, daemon=True).start()
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    # app = QApplication(sys.argv)
 
     fsm_path = '/Users/lhz/Desktop/craigslist_graph'
 
