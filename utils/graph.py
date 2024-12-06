@@ -1,4 +1,6 @@
 import sys
+
+import matplotlib
 import networkx as nx
 import pyqtgraph as pg
 from PIL.ImageQt import ImageQt
@@ -6,7 +8,6 @@ from PyQt6.QtWidgets import QApplication, QDialog, QVBoxLayout, QLineEdit, QText
     QPushButton, QHBoxLayout
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont, QPixmap
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 
 
@@ -203,6 +204,7 @@ class MatplotlibGraphDisplay:
         self.web_fsm = web_fsm
         self.fig = None
         self.ax = None
+        matplotlib.use('Qt5Agg')
 
     def show(self):
         if self.fig is None or not plt.fignum_exists(self.fig.number):
@@ -211,7 +213,20 @@ class MatplotlibGraphDisplay:
             self.fig.canvas.mpl_connect('pick_event', self.on_pick)
             self.generate_tree_layout()
             self.draw_graph()
+
+            # self.fig.subplots_adjust(top=0.95, bottom=0.15, left=0.15, right=0.95)
+            fig_manager = plt.get_current_fig_manager()
+            # fig_manager.window.setGeometry(100, 100, 800, 600)
+            # fig, ax = plt.subplots()
+            # fig_width, fig_height = fig.get_size_inches()  # Get width and height in inches
+            # dpi = fig.dpi  # Get the DPI (dots per inch) of the figure
+            # window_width = fig_width * dpi  # Convert inches to pixels
+            # window_height = fig_height * dpi
+            fig_manager.window.setGeometry(1000, 100, int(600), int(800))
+
             plt.show(block=False)  # Non-blocking show
+
+
         else:
             self.ax.clear()
             self.generate_tree_layout()

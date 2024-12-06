@@ -4,6 +4,7 @@ import ast
 import re
 import sys
 import threading
+from time import sleep
 
 from PIL.Image import Image
 from PyQt6.QtWidgets import QApplication
@@ -11,7 +12,7 @@ from loguru import logger
 import os
 import openai
 
-from runtime.llm import invoke_llm_by_chat
+from runtime.llm import invoke_llm_by_chat, global_token_usage
 from runtime.runtime import BasicRuntime
 from utils.image_util import pil_image_to_base64
 from utils.print_util import pretty_print
@@ -83,13 +84,26 @@ Example 03:
     Task: I need to find a job as a software development engineer
     
     Expected Output: CLICK 4
+    
+Example 04:
+    Website Current Action Space:
+    [0] Button: Login/Register 
+    [1] Button: Post
+    [3] Input Box: Search
+    [4] Button: Search
+    
+    Task: I need to register a new account
+    
+    Output: CLICK 5
+    This is an error case, there is no action 5 in the action space. This will cause the execution to fail.
         
 Note that this is not a fixed step, you need to understand it according to the task.
 
 Note, To ensure success: 
     1. Respond only with actions, and do not include any additional text.
     2. Respond only one action at a time
-    3. If you think the task is complete, generate QUIT
+    3. You must select an action from Action Space List, otherwise the execution will fail
+    4. If you think the task is complete, generate QUIT
 """
 
         self.conversation_history.append({
@@ -112,21 +126,21 @@ Note, To ensure success:
                     "type": "text",
                     "text": f"Current State Description: {state_info}",
                 },
+                {
+                    "type": "text",
+                    "text": f"Action Space, You must select an action from this space\n: {action_space}",
+                },
 
                 # Action Space of current state
                 {
                     "type": "text",
-                    "text": "Below is the Labeled-Image of the current state and its action space:\n\n",
+                    "text": "Below is the Labeled-Image of the current state:\n\n",
                 },
                 {
                     "type": "image_url",
                     "image_url": {
                         "url": f"data:image/png;base64,{label_img_base64}",
                     },
-                },
-                {
-                    "type": "text",
-                    "text": f"Current State's Action Space\n: {action_space}",
                 },
 
 
@@ -158,12 +172,21 @@ Note, To ensure success:
         # debug
         # pretty_print(self.conversation_history)
 
-        self.conversation_history.append({
+        # self.conversation_history.append({
+        #     "role": "user",
+        #     "content": self.task
+        # })
+
+        current_user_task = {
             "role": "user",
             "content": self.task
-        })
+        }
 
-        assistant_reply = invoke_llm_by_chat(self.conversation_history)
+        conversation = self.conversation_history + [prompt, current_user_task]
+
+        # assistant_reply = invoke_llm_by_chat(self.conversation_history)
+        assistant_reply = invoke_llm_by_chat(conversation)
+
         self.conversation_history.append({
             "role": "assistant",
             "content": assistant_reply
@@ -193,8 +216,10 @@ Note, To ensure success:
     def execute_action(self, action_str: str) -> str:
         logger.info(f"Prepare to Execute Action: {action_str}")
 
-        self.runtime.fsm.current_state.som_image.show()
-        input("Press Enter to continue...")
+        # self.runtime.fsm.current_state.som_image.show()
+        # input("Press Enter to continue...")
+
+        # sleep(1)
 
         result = self.runtime.take_action(action_str)
 
@@ -230,16 +255,22 @@ Note, To ensure success:
                 #         "content": "Action Executed"
                 #     })
 
-            input("Press Enter to continue...")
+            # input("Press Enter to continue...")
+            # sleep(1)
+            logger.info(f"prompt_tokens: {global_token_usage["prompt_tokens"]}")
+            logger.info(f"completion_tokens: {global_token_usage["completion_tokens"]}")
+            logger.info(f"total_tokens: {global_token_usage["total_tokens"]}")
 
 
-def run_agent_in_background(agent):
-    """
-    Run the agent's main logic in a separate thread.
-    """
-    def agent_logic():
-        agent.run()
-    threading.Thread(target=agent_logic, daemon=True).start()
+
+
+# def run_agent_in_background(agent):
+#     """
+#     Run the agent's main logic in a separate thread.
+#     """
+#     def agent_logic():
+#         agent.run()
+#     threading.Thread(target=agent_logic, daemon=True).start()
 
 if __name__ == "__main__":
     # app = QApplication(sys.argv)
@@ -248,10 +279,10 @@ if __name__ == "__main__":
 
     print("You can use this AI assistant to help you complete website tasks,")
     print()
-    # prompt = input("What do you want to do today? \n")
+    prompt = input("What do you want to do today? \n")
 
-    prompt = 'I need to register a craigslist account.'
-    # prompt = 'I need to post a job ad to hire a new software development engineer'
+    # prompt = 'I need to register a craigslist account.'
+    # prompt = 'Help me post an ad for recruiting a software development engineer'
 
     agent = BasicAgent(fsm_path, prompt)
     agent.run()
