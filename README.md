@@ -9,8 +9,9 @@ python main.py
 python agent.py
 ```
 
+Examples:
 ```
 Please help me register an account. My email address is liu.hz@tamu.edu
 
-I need to recruit a software development engineer who can delete the Python. The zip code of job location is 77840
+I need to recruit a python software development engineer. The zip code of job location is 77840
 ```

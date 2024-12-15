@@ -37,7 +37,7 @@ You need to generate actions based on this information and complete the task ste
 Available Actions:
 - CLICK ID
 - TYPE ID CONTENT
-- QUIT
+
 
 You can take actions in the following format:
 ACTION_TYPE ID [ACTION_CONTENT]
@@ -103,7 +103,7 @@ Note, To ensure success:
     1. Respond only with actions, and do not include any additional text.
     2. Respond only one action at a time
     3. You must select an action from Action Space List, otherwise the execution will fail
-    4. If you think the task is complete, generate QUIT
+
 """
 
         self.conversation_history.append({
