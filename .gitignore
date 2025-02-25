@@ -4,4 +4,10 @@ models/icon_*
 
 .idea
 
+__pycache__
+
+cache.png
+current_web_page.png
+
+
 #webarena_ex
